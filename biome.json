@@ -48,11 +48,7 @@
     }
   },
   "files": {
-    "includes": [
-      "**",
-      "!**/worker-configuration.d.ts",
-      "!**/styles/globals.css"
-    ]
+    "includes": ["**", "!**/worker-configuration.d.ts", "!**/styles/globals.css"]
   },
   "javascript": {
     "formatter": {
