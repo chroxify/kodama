@@ -1,0 +1,17 @@
+# echo "\033[1;35m🔍 Running sherif checks...\033[0m"
+# # Run sherif and capture file paths, removing any trailing colons
+# SHERIF_OUTPUT=$(bun sherif --fix)
+# FILES_MODIFIED=$(echo "$SHERIF_OUTPUT" | grep -o '\./[^:]*' | sort -u)
+
+# Show sherif output
+# echo "\033[0;34m$SHERIF_OUTPUT\033[0m"
+
+# If files were found, stage them
+if [ ! -z "$FILES_MODIFIED" ]; then
+  echo "\n\033[0;32m✨ Adding modified files:\033[0m"
+  echo "$FILES_MODIFIED"
+  echo "$FILES_MODIFIED" | xargs git add
+fi
+
+echo "\n\033[1;36m🎨 Running lint-staged...\033[0m"
+bun lint-staged
