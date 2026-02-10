@@ -226,7 +226,7 @@ export function AnimationsSection() {
   animations={["blink", "float", "sway", "eyeWander"]}
 />`}</CodeBlock>
 
-      <div className='mt-3 grid grid-cols-6 gap-3 max-[600px]:grid-cols-3'>
+      <div className='mt-3 grid grid-cols-7 gap-3 max-[600px]:grid-cols-3'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='blink-demo' size={48} animations={['blink']} detailLevel='full' />
           <span className='text-[0.6875rem] font-[450] text-black/40'>blink</span>
@@ -248,10 +248,14 @@ export function AnimationsSection() {
           <span className='text-[0.6875rem] font-[450] text-black/40'>eyebrowBounce</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
+          <Kodama name='glance-demo' size={48} animations={['glance']} detailLevel='full' />
+          <span className='text-[0.6875rem] font-[450] text-black/40'>glance</span>
+        </div>
+        <div className='flex flex-col items-center gap-1.5'>
           <Kodama
             name='all-anim'
             size={48}
-            animations={['blink', 'float', 'sway', 'eyeWander', 'eyebrowBounce']}
+            animations={['blink', 'float', 'sway', 'eyeWander', 'eyebrowBounce', 'glance']}
             detailLevel='full'
           />
           <span className='text-[0.6875rem] font-[450] text-black/40'>combined</span>
@@ -463,19 +467,13 @@ export function ReferenceSection() {
               <td className={tdDesc}>Feature visibility level</td>
             </tr>
             <tr>
-              <td className={tdName}>showMouth</td>
-              <td className={tdType}>boolean</td>
-              <td className={tdDefault}>true</td>
-              <td className={tdDesc}>Toggle mouth visibility</td>
-            </tr>
-            <tr>
               <td className={tdName}>animations</td>
               <td className={tdType}>Animation[]</td>
               <td className={tdDefault}>[]</td>
               <td className={tdDesc}>
                 Animations to enable: <code>blink</code> - <code>float</code> - <code>sway</code> -{' '}
-                <code>eyeWander</code> - <code>eyebrowBounce</code> - <code>entrance</code>. API:
-                comma-separated.
+                <code>eyeWander</code> - <code>eyebrowBounce</code> - <code>glance</code> -{' '}
+                <code>entrance</code>. API: comma-separated.
               </td>
             </tr>
             <tr>

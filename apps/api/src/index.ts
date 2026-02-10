@@ -11,6 +11,7 @@ const VALID_ANIMATIONS: ReadonlySet<string> = new Set([
   'sway',
   'eyeWander',
   'eyebrowBounce',
+  'glance',
 ]);
 
 const YEAR_IN_SECONDS = 31_536_000;
@@ -64,7 +65,6 @@ export default {
     const detailLevel = VALID_DETAILS.has(p.get('detailLevel') ?? '')
       ? (p.get('detailLevel') as DetailLevel)
       : undefined;
-    const showMouth = p.get('showMouth') !== 'false';
     const animations = p
       .get('animations')
       ?.split(',')
@@ -84,7 +84,7 @@ export default {
       if (pairs.length > 0) gradients = pairs;
     }
 
-    const etag = `"${fnv1a(`${name}:${size}:${variant}:${mood ?? ''}:${detailLevel ?? ''}:${showMouth}:${animations?.join(',') ?? ''}:${gradientsParam ?? ''}`).toString(36)}"`;
+    const etag = `"${fnv1a(`${name}:${size}:${variant}:${mood ?? ''}:${detailLevel ?? ''}:${animations?.join(',') ?? ''}:${gradientsParam ?? ''}`).toString(36)}"`;
 
     if (request.headers.get('if-none-match') === etag) {
       return new Response(null, { status: 304, headers: CACHE_HEADERS });
@@ -96,7 +96,6 @@ export default {
       variant,
       mood,
       detailLevel,
-      showMouth,
       animations,
       gradients,
     });

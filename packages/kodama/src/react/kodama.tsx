@@ -20,7 +20,6 @@ export interface KodamaProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   variant?: Variant;
   depth?: Depth;
   interactive?: boolean;
-  showMouth?: boolean;
   animations?: Animation[];
   mood?: Mood;
   detailLevel?: DetailLevel;
@@ -67,6 +66,10 @@ const ALL_KEYFRAMES = `
 	0% { transform: scaleY(0.05); }
 	100% { transform: scaleY(1); }
 }
+@keyframes kodama-glance {
+	0%, 82%, 100% { transform: var(--kodama-rest); }
+	88%, 92% { transform: var(--kodama-facing); }
+}
 `;
 
 let keyframesInjected = false;
@@ -96,7 +99,6 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
       variant = 'gradient',
       depth = 'dramatic',
       interactive = true,
-      showMouth: showMouthProp = true,
       animations = [],
       mood,
       detailLevel: detailLevelProp,
@@ -123,6 +125,7 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
         sway: set.has('sway'),
         eyeWander: set.has('eyeWander'),
         eyebrowBounce: set.has('eyebrowBounce'),
+        glance: set.has('glance'),
       };
     }, [animations]);
 
@@ -130,7 +133,7 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
       injectKeyframes();
     }
 
-    const { face, gradient, rotation, blinkStyle } = React.useMemo(() => {
+    const { face, gradient, rotation, blinkStyle, glanceAnim } = React.useMemo(() => {
       const h = hash(name);
       const colorsLength = gradients?.length ?? DEFAULT_GRADIENTS.length;
       const data = generate({ name, colorsLength });
@@ -144,11 +147,16 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
       const blinkDelay = (blinkSeed % 40) / 10;
       const blinkDuration = 2 + (blinkSeed % 40) / 10;
 
+      const glanceSeed = h * 37;
+      const glanceDuration = 6 + (glanceSeed % 30) / 10;
+      const glanceDelay = (glanceSeed % 20) / 10;
+
       return {
         face: faceData,
         gradient: _gradient,
         rotation: data.rotation,
         blinkStyle: `animation:kodama-blink ${blinkDuration}s ease-in-out ${blinkDelay}s infinite;transform-origin:center center;`,
+        glanceAnim: `kodama-glance ${glanceDuration}s ease-in-out ${glanceDelay}s infinite`,
       };
     }, [name, gradients, mood]);
 
@@ -213,10 +221,15 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
 
     const transform = React.useMemo(() => {
       if (depth === 'none') return;
-      const rotateX = isHovered && interactive ? 0 : rotation.x * preset.rotateRange;
-      const rotateY = isHovered && interactive ? 0 : rotation.y * preset.rotateRange;
+      const rotateX = isHovered && interactive && !has.glance ? 0 : rotation.x * preset.rotateRange;
+      const rotateY = isHovered && interactive && !has.glance ? 0 : rotation.y * preset.rotateRange;
       return `scale(${preset.contentScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${preset.translateZ}px)`;
-    }, [depth, isHovered, interactive, rotation, preset]);
+    }, [depth, isHovered, interactive, rotation, preset, has.glance]);
+
+    const facingTransform = React.useMemo(() => {
+      if (depth === 'none') return;
+      return `scale(${preset.contentScale}) rotateX(0deg) rotateY(0deg) translateZ(${preset.translateZ}px)`;
+    }, [depth, preset]);
 
     const sizeValue = typeof size === 'number' ? `${size}px` : size;
 
@@ -309,21 +322,32 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
         >
           <div
             data-kodama-face=''
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 2,
-              transform,
-              transformStyle: depth !== 'none' ? 'preserve-3d' : undefined,
-              transition: interactive ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : undefined,
-              ...(has.float && {
-                animation: 'kodama-float 3s ease-in-out infinite',
-              }),
-            }}
+            style={
+              {
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 2,
+                ...(has.glance && depth !== 'none'
+                  ? {
+                      '--kodama-rest': transform,
+                      '--kodama-facing': facingTransform,
+                      animation: glanceAnim,
+                    }
+                  : {
+                      transform,
+                      transition: interactive ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : undefined,
+                    }),
+                transformStyle: depth !== 'none' ? 'preserve-3d' : undefined,
+                ...(has.float &&
+                  !has.glance && {
+                    animation: 'kodama-float 3s ease-in-out infinite',
+                  }),
+              } as React.CSSProperties
+            }
           >
             {showEyebrows && eyebrowHtml && (
               <div
@@ -380,7 +404,7 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
               )}
             </div>
 
-            {showMouth && showMouthProp && (
+            {showMouth && (
               <div
                 data-kodama-mouth=''
                 style={{

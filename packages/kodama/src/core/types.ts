@@ -78,13 +78,12 @@ export type FeatureShape = {
 
 export type DetailLevel = 'minimal' | 'basic' | 'standard' | 'full';
 
-export type Animation = 'blink' | 'float' | 'entrance' | 'sway' | 'eyeWander' | 'eyebrowBounce';
+export type Animation = 'blink' | 'float' | 'entrance' | 'sway' | 'eyeWander' | 'eyebrowBounce' | 'glance';
 
 export type CreateKodamaOptions = {
   name: string;
   size?: number;
   variant?: Variant;
-  showMouth?: boolean;
   mood?: Mood;
   detailLevel?: DetailLevel;
   gradients?: readonly GradientPair[];

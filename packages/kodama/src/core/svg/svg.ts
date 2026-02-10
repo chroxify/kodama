@@ -227,7 +227,6 @@ export function createKodama(options: CreateKodamaOptions): CreateKodamaResult {
     name,
     size = 40,
     variant = 'gradient',
-    showMouth = true,
     mood,
     detailLevel: detailLevelOption,
     gradients,
@@ -250,6 +249,7 @@ export function createKodama(options: CreateKodamaOptions): CreateKodamaResult {
     sway: set.has('sway'),
     eyeWander: set.has('eyeWander'),
     eyebrowBounce: set.has('eyebrowBounce'),
+    glance: set.has('glance'),
   };
 
   const blinkSeed = h * 31;
@@ -263,7 +263,7 @@ export function createKodama(options: CreateKodamaOptions): CreateKodamaResult {
   const accessorySvg = ACCESSORY_SHAPES[face.accessory];
 
   const showEyebrows = detailLevel === 'standard' || detailLevel === 'full';
-  const showMainMouth = detailLevel !== 'minimal' && showMouth;
+  const showMainMouth = detailLevel !== 'minimal';
   const showCheeks = detailLevel === 'full';
   const showAccessories = detailLevel === 'full';
   const hasGlasses = face.accessory === 'glasses' || face.accessory === 'sunglasses';
@@ -355,19 +355,30 @@ export function createKodama(options: CreateKodamaOptions): CreateKodamaResult {
         </defs>`
       : '';
 
+  const glanceSeed = h * 37;
+  const glanceDuration = 6 + (glanceSeed % 30) / 10;
+  const glanceDelay = (glanceSeed % 20) / 10;
+  const glanceId = `kodama-glance-${h.toString(36)}`;
+  const glanceKeyframe = has.glance
+    ? `@keyframes ${glanceId}{0%,82%,100%{transform:translate(${toFixed(offsetX)}px,${toFixed(offsetY)}px)}88%,92%{transform:translate(0,0)}}`
+    : '';
+
   const rootAnimation = has.entrance ? 'animation:kodama-entrance-scale 0.4s ease-out forwards;' : '';
   const swayStyle = has.sway ? 'animation:kodama-sway 5s ease-in-out infinite;' : '';
   const floatStyle = has.float ? 'animation:kodama-float 3s ease-in-out infinite;' : '';
+  const glanceStyle = has.glance
+    ? `animation:${glanceId} ${toFixed(glanceDuration)}s ease-in-out ${toFixed(glanceDelay)}s infinite;`
+    : '';
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%"${styleAttr(
     rootAnimation
   )}>
-    <style>${SVG_KEYFRAMES}</style>
+    <style>${SVG_KEYFRAMES}${glanceKeyframe}</style>
     ${defs}
     <circle cx="50" cy="50" r="50" fill="${variant === 'gradient' ? `url(#${gradientId})` : gradient.from}" />
     ${variant === 'gradient' ? `<circle cx="50" cy="50" r="50" fill="url(#${gradientId}-shine)" />` : ''}
     <g${styleAttr(swayStyle)}>
-      <g transform="translate(${toFixed(offsetX)} ${toFixed(offsetY)})">
+      <g${has.glance ? styleAttr(glanceStyle) : ` transform="translate(${toFixed(offsetX)} ${toFixed(offsetY)})"`}>
         <g${styleAttr(floatStyle)}>${faceBody}</g>
       </g>
     </g>
