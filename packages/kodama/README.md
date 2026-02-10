@@ -1,15 +1,11 @@
-# kodama
+# kodama-id
 
-To install dependencies:
+Single-package Kodama library with two source areas:
 
-```bash
-bun install
-```
+- `src/core`: framework-agnostic deterministic avatar logic
+- `src/react`: React wrappers/components powered by `src/core`
 
-To run:
+## Entry Points
 
-```bash
-bun run src/index.ts
-```
-
-This project was created using `bun init` in bun v1.3.1. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+- `kodama-id`
+- `kodama-id/react`

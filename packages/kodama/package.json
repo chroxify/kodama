@@ -1,11 +1,31 @@
 {
-  "name": "kodama",
-  "module": "src/index.ts",
+  "name": "kodama-id",
+  "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
+  "exports": {
+    ".": "./src/core/index.ts",
+    "./react": "./src/react/index.ts"
+  },
+  "types": "./src/core/index.ts",
+  "scripts": {
+    "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "typescript": "^5"
   }
 }

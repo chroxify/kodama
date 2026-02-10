@@ -1,0 +1,5 @@
+{
+  "version": "0.2",
+  "ignorePaths": ["**/.next/**", "**/node_modules/**", "bun.lock"],
+  "words": ["kodama", "Kodama", "Sakura", "hiro", "kira", "xena", "eyewander", "eyebrowbounce"]
+}
