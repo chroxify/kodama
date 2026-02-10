@@ -28,10 +28,10 @@ export interface KodamaProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
 }
 
 const DEPTH_PRESETS = {
-  none: { rotateRange: 0, translateZ: 0, perspective: 'none' },
-  subtle: { rotateRange: 5, translateZ: 4, perspective: '800px' },
-  medium: { rotateRange: 10, translateZ: 8, perspective: '500px' },
-  dramatic: { rotateRange: 15, translateZ: 12, perspective: '300px' },
+  none: { rotateRange: 0, translateZ: 0, perspective: 'none', contentScale: 1 },
+  subtle: { rotateRange: 5, translateZ: 4, perspective: '800px', contentScale: 0.97 },
+  medium: { rotateRange: 10, translateZ: 8, perspective: '500px', contentScale: 0.94 },
+  dramatic: { rotateRange: 15, translateZ: 12, perspective: '300px', contentScale: 0.9 },
 } as const;
 
 const ALL_KEYFRAMES = `
@@ -215,7 +215,7 @@ export const Kodama = React.forwardRef<HTMLDivElement, KodamaProps>(
       if (depth === 'none') return;
       const rotateX = isHovered && interactive ? 0 : rotation.x * preset.rotateRange;
       const rotateY = isHovered && interactive ? 0 : rotation.y * preset.rotateRange;
-      return `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${preset.translateZ}px)`;
+      return `scale(${preset.contentScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${preset.translateZ}px)`;
     }, [depth, isHovered, interactive, rotation, preset]);
 
     const sizeValue = typeof size === 'number' ? `${size}px` : size;

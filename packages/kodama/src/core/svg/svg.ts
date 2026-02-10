@@ -134,9 +134,10 @@ function renderShape(
       )
       .join('') ?? '';
 
+  const fullStyle = style ? `overflow:visible;${style}` : 'overflow:visible';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${featureShape.viewBox}" width="${toFixed(width)}" height="${toFixed(
     height
-  )}"${styleAttr(style)}>${paths}${strokes}${circles}${ellipses}${rects}</svg>`;
+  )}"${styleAttr(fullStyle)}>${paths}${strokes}${circles}${ellipses}${rects}</svg>`;
 }
 
 function withTransform(x: number, y: number, body: string, style = ''): string {
@@ -218,7 +219,7 @@ export function renderFeature(
   const content = renderShapeContent(featureShape, fill, stroke);
   const wrappedContent = innerGroupStyle ? `<g style="${innerGroupStyle}">${content}</g>` : content;
   const style = svgStyle ?? 'width:100%;height:auto';
-  return `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="${featureShape.viewBox}" style="${style}">${wrappedContent}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="${featureShape.viewBox}" style="overflow:visible;${style}">${wrappedContent}</svg>`;
 }
 
 export function createKodama(options: CreateKodamaOptions): CreateKodamaResult {

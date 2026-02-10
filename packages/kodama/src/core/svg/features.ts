@@ -37,14 +37,14 @@ export const EYE_SHAPES: Record<EyeType, FeatureShape> = {
   wink: {
     viewBox: '0 0 63 15',
     paths: [],
-    strokes: [{ d: 'M0 9C0 9 3.5 5 7.5 5C11.5 5 15 9 15 9', strokeWidth: '3.5', strokeLinecap: 'round' }],
+    strokes: [{ d: 'M1 9C3 4 5 3 7.5 3C10 3 12 4 14 9', strokeWidth: '3.5', strokeLinecap: 'round' }],
     circles: [{ cx: '55.2', cy: '7.2', r: '7.2' }],
   },
   heart: {
     viewBox: '0 0 63 15',
     paths: [
-      'M7.5 14C7.5 14 0 9 0 5.5C0 2 2.5 0 5 0C6.5 0 7.5 1 7.5 1C7.5 1 8.5 0 10 0C12.5 0 15 2 15 5.5C15 9 7.5 14 7.5 14Z',
-      'M55.5 14C55.5 14 48 9 48 5.5C48 2 50.5 0 53 0C54.5 0 55.5 1 55.5 1C55.5 1 56.5 0 58 0C60.5 0 63 2 63 5.5C63 9 55.5 14 55.5 14Z',
+      'M7.5 14C5 11 0 8.5 0 5C0 2.2 2.2 0 5 0C6.5 0 7.5 1.2 7.5 1.2C7.5 1.2 8.5 0 10 0C12.8 0 15 2.2 15 5C15 8.5 10 11 7.5 14Z',
+      'M55.5 14C53 11 48 8.5 48 5C48 2.2 50.2 0 53 0C54.5 0 55.5 1.2 55.5 1.2C55.5 1.2 56.5 0 58 0C60.8 0 63 2.2 63 5C63 8.5 58 11 55.5 14Z',
     ],
   },
 };
@@ -81,12 +81,12 @@ export const MOUTH_SHAPES: Record<MouthType, FeatureShape> = {
   smile: {
     viewBox: '0 0 30 16',
     paths: [],
-    strokes: [{ d: 'M4 5Q15 16 26 5', strokeWidth: '3', strokeLinecap: 'round' }],
+    strokes: [{ d: 'M4 5C8 14 22 14 26 5', strokeWidth: '3', strokeLinecap: 'round' }],
   },
   grin: {
     viewBox: '0 0 30 16',
     paths: [],
-    strokes: [{ d: 'M3 4C3 4 8 15 15 15C22 15 27 4 27 4', strokeWidth: '3', strokeLinecap: 'round' }],
+    strokes: [{ d: 'M3 5C5 14 10 16 15 16C20 16 25 14 27 5', strokeWidth: '3', strokeLinecap: 'round' }],
   },
   o: {
     viewBox: '0 0 30 16',
@@ -96,17 +96,17 @@ export const MOUTH_SHAPES: Record<MouthType, FeatureShape> = {
   cat: {
     viewBox: '0 0 30 16',
     paths: [],
-    strokes: [{ d: 'M5 5Q9 12 15 5Q21 12 25 5', strokeWidth: '3', strokeLinecap: 'round' }],
+    strokes: [{ d: 'M5 5C7 12 13 12 15 5C17 12 23 12 25 5', strokeWidth: '3', strokeLinecap: 'round' }],
   },
   tongue: {
     viewBox: '0 0 30 16',
-    paths: [{ d: 'M10 9C10 9 10 14 13 14C16 14 16 9 16 9', fill: '#FF6B8A', opacity: '0.7' }],
-    strokes: [{ d: 'M5 4Q15 14 25 4', strokeWidth: '3', strokeLinecap: 'round' }],
+    paths: [{ d: 'M10 9C10 12.5 11 14.5 13 14.5C15 14.5 16 12.5 16 9', fill: '#FF6B8A', opacity: '0.7' }],
+    strokes: [{ d: 'M5 4C9 13 21 13 25 4', strokeWidth: '3', strokeLinecap: 'round' }],
   },
   smirk: {
     viewBox: '0 0 30 16',
     paths: [],
-    strokes: [{ d: 'M8 7Q14 7 22 4', strokeWidth: '3', strokeLinecap: 'round' }],
+    strokes: [{ d: 'M8 8C12 10 18 6 22 4', strokeWidth: '3', strokeLinecap: 'round' }],
   },
   flat: {
     viewBox: '0 0 30 16',
@@ -136,7 +136,7 @@ export const ACCESSORY_SHAPES: Record<AccessoryType, FeatureShape | null> = {
       { cx: '11', cy: '11', r: '8', fill: 'none', strokeWidth: '2.5' },
       { cx: '52', cy: '11', r: '8', fill: 'none', strokeWidth: '2.5' },
     ],
-    strokes: [{ d: 'M19 11C24 8 39 8 44 11', strokeWidth: '2.5', fill: 'none' }],
+    strokes: [{ d: 'M19 11C19 6 44 6 44 11', strokeWidth: '2.5', fill: 'none' }],
   },
   sunglasses: {
     viewBox: '0 0 63 20',
@@ -145,6 +145,6 @@ export const ACCESSORY_SHAPES: Record<AccessoryType, FeatureShape | null> = {
       { x: '1', y: '4', width: '20', height: '14', rx: '4', opacity: '0.75' },
       { x: '42', y: '4', width: '20', height: '14', rx: '4', opacity: '0.75' },
     ],
-    strokes: [{ d: 'M21 10C26 7 37 7 42 10', strokeWidth: '3' }],
+    strokes: [{ d: 'M21 10C21 5 42 5 42 10', strokeWidth: '3', strokeLinecap: 'round' }],
   },
 };

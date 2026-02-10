@@ -13,10 +13,10 @@ export function HeroSection() {
       <button
         type='button'
         className='mb-1 inline-flex w-fit cursor-pointer items-center gap-2 bg-transparent p-0 font-mono text-[0.6875rem] text-black/40 transition-colors hover:text-black/65'
-        onClick={() => navigator.clipboard?.writeText('npm install kodama')}
+        onClick={() => navigator.clipboard?.writeText('npm install kodama-id')}
         title='Copy to clipboard'
       >
-        <code className='bg-transparent p-0 text-inherit'>npm install kodama</code>
+        <code className='bg-transparent p-0 text-inherit'>npm install kodama-id</code>
         <span className='opacity-70'>
           <CopyIcon />
         </span>
@@ -56,7 +56,7 @@ export function QuickStartSection({
         Import the <code>Kodama</code> component and pass a <code>name</code> string. The avatar is
         deterministically generated from the input.
       </p>
-      <CodeBlock>{`import { Kodama } from "kodama";
+      <CodeBlock>{`import { Kodama } from "kodama-id/react";
 
 <Kodama name="sakura@example.com" size={48} />`}</CodeBlock>
 
@@ -372,191 +372,131 @@ export function CustomGradientsSection() {
   );
 }
 
-export function NextApiSection() {
+export function ApiSection() {
   return (
-    <Section title='Next.js API'>
-      <p>Generate avatars as plain SVG via a Next.js route handler directly from the core package.</p>
+    <Section title='API'>
+      <p>
+        Generate avatars as SVG over HTTP. Responses are edge-cached with <strong>immutable</strong> headers
+        for instant delivery. Same name, same face — cached for a year.
+      </p>
 
-      <CodeBlock>{`// app/api/avatar/route.ts
-import { createKodama } from "kodama-id";
+      <CodeBlock>{`GET /:name
 
-export function GET(request: Request) {
-  const url = new URL(request.url);
-  const name = url.searchParams.get("name") ?? "kodama";
-  const { svg } = createKodama({ name, size: 128 });
+<!-- As an image -->
+<img src="https://kodama.example.com/alice" />
 
-  return new Response(svg, {
-    headers: { "Content-Type": "image/svg+xml" }
-  });
-}
+<!-- With options -->
+<img src="https://kodama.example.com/alice?size=256&mood=happy" />`}</CodeBlock>
 
-// Usage: /api/avatar?name=alice`}</CodeBlock>
+      <p>
+        All parameters match the React props by name. The avatar <code>name</code> is the URL path —
+        everything else goes in the query string.
+      </p>
+
+      <CodeBlock>{`# Full example
+/alice?size=256&mood=cool&detailLevel=full&animations=blink,float`}</CodeBlock>
     </Section>
   );
 }
 
-export function PropsSection() {
+export function ReferenceSection() {
+  const th =
+    'border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85';
+  const tdName =
+    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85';
+  const tdType =
+    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]';
+  const tdDefault =
+    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40';
+  const tdDesc = 'border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65';
+  const reactOnly = (
+    <span className='ml-1.5 rounded bg-black/5 px-1.5 py-0.5 font-sans text-[0.5625rem] font-medium tracking-wide text-black/35'>
+      REACT
+    </span>
+  );
+
   return (
-    <Section title='Props'>
+    <Section title='Reference'>
+      <p>
+        Props and API params share the same names. In the API, <code>name</code> is the URL path — all others
+        are query params.
+      </p>
       <div className='mt-2 overflow-x-auto'>
         <table className='w-full border-collapse text-[0.8125rem]'>
           <thead>
             <tr>
-              <th className='border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85'>
-                Prop
-              </th>
-              <th className='border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85'>
-                Type
-              </th>
-              <th className='border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85'>
-                Default
-              </th>
-              <th className='border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85'>
-                Description
-              </th>
+              <th className={th}>Prop / Param</th>
+              <th className={th}>Type</th>
+              <th className={th}>Default</th>
+              <th className={th}>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                name
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                string
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                -
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Input string for deterministic generation
-              </td>
+              <td className={tdName}>name</td>
+              <td className={tdType}>string</td>
+              <td className={tdDefault}>-</td>
+              <td className={tdDesc}>Input string for deterministic generation. API: URL path segment.</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                size
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                number | string
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                40
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Avatar dimensions in pixels or CSS units
-              </td>
+              <td className={tdName}>size</td>
+              <td className={tdType}>number | string</td>
+              <td className={tdDefault}>40 / 128</td>
+              <td className={tdDesc}>Avatar dimensions in pixels. React default: 40. API default: 128.</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                variant
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                {'"gradient" | "solid"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                {'"gradient"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Background style
-              </td>
+              <td className={tdName}>variant</td>
+              <td className={tdType}>{'"gradient" | "solid"'}</td>
+              <td className={tdDefault}>{'"gradient"'}</td>
+              <td className={tdDesc}>Background style</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                depth
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                {'"none" | "subtle" | "medium" | "dramatic"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                {'"dramatic"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                3D perspective transform depth
-              </td>
+              <td className={tdName}>mood</td>
+              <td className={tdType}>{'"happy" | "surprised" | "sleepy" | "cool" | "cheeky"'}</td>
+              <td className={tdDefault}>-</td>
+              <td className={tdDesc}>Override expression</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                interactive
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                boolean
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                true
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Enable hover interaction
-              </td>
+              <td className={tdName}>detailLevel</td>
+              <td className={tdType}>{'"minimal" | "basic" | "standard" | "full"'}</td>
+              <td className={tdDefault}>auto</td>
+              <td className={tdDesc}>Feature visibility level</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                mood
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                {'"happy" | "surprised" | "sleepy" | "cool" | "cheeky"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                -
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Override expression
-              </td>
+              <td className={tdName}>showMouth</td>
+              <td className={tdType}>boolean</td>
+              <td className={tdDefault}>true</td>
+              <td className={tdDesc}>Toggle mouth visibility</td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                detailLevel
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                {'"minimal" | "basic" | "standard" | "full"'}
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                auto
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Feature visibility level
-              </td>
-            </tr>
-            <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                animations
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                KodamaAnimation[]
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                []
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
+              <td className={tdName}>animations</td>
+              <td className={tdType}>Animation[]</td>
+              <td className={tdDefault}>[]</td>
+              <td className={tdDesc}>
                 Animations to enable: <code>blink</code> - <code>float</code> - <code>sway</code> -{' '}
-                <code>eyeWander</code> - <code>eyebrowBounce</code> - <code>entrance</code>
+                <code>eyeWander</code> - <code>eyebrowBounce</code> - <code>entrance</code>. API:
+                comma-separated.
               </td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                showMouth
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                boolean
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                true
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Toggle mouth visibility
+              <td className={tdName}>gradients</td>
+              <td className={tdType}>GradientPair[]</td>
+              <td className={tdDefault}>-</td>
+              <td className={tdDesc}>
+                Custom gradient palette. API: hex pairs like <code>E8D5F5-C7A4E0,FFE0D0-FFB899</code>
               </td>
             </tr>
             <tr>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85'>
-                gradients
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]'>
-                GradientPair[]
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40'>
-                -
-              </td>
-              <td className='border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65'>
-                Custom gradient palette
-              </td>
+              <td className={tdName}>depth{reactOnly}</td>
+              <td className={tdType}>{'"none" | "subtle" | "medium" | "dramatic"'}</td>
+              <td className={tdDefault}>{'"dramatic"'}</td>
+              <td className={tdDesc}>3D perspective transform depth</td>
+            </tr>
+            <tr>
+              <td className={tdName}>interactive{reactOnly}</td>
+              <td className={tdType}>boolean</td>
+              <td className={tdDefault}>true</td>
+              <td className={tdDesc}>Enable hover interaction</td>
             </tr>
           </tbody>
         </table>
@@ -568,7 +508,7 @@ export function PropsSection() {
 export function PageFooter() {
   return (
     <footer className='mx-auto max-w-152 border-t border-black/8 px-6 py-6 text-xs text-black/40'>
-      Kodama - Deterministic animated avatars for React.
+      Kodama - Deterministic animated avatars.
     </footer>
   );
 }

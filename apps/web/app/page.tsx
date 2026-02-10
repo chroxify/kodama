@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import {
   AnimationsSection,
+  ApiSection,
   ColorsSection,
   CombinationsSection,
   CustomGradientsSection,
@@ -11,10 +12,9 @@ import {
   DeterministicSection,
   HeroSection,
   MoodsSection,
-  NextApiSection,
   PageFooter,
-  PropsSection,
   QuickStartSection,
+  ReferenceSection,
   VariantsSection,
 } from '@/components/sections';
 
@@ -34,6 +34,7 @@ export default function Home() {
       >
         <HeroSection />
         <QuickStartSection tryName={tryName} setTryName={setTryName} />
+        <ApiSection />
         <DeterministicSection />
         <CombinationsSection />
         <ColorsSection />
@@ -43,8 +44,7 @@ export default function Home() {
         <DepthEffectsSection />
         <DetailLevelsSection />
         <CustomGradientsSection />
-        <NextApiSection />
-        <PropsSection />
+        <ReferenceSection />
       </article>
 
       <PageFooter />

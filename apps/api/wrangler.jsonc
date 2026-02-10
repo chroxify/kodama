@@ -1,0 +1,8 @@
+{
+  "name": "kodama-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "observability": {
+    "enabled": true
+  }
+}
