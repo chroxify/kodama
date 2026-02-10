@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --port 8786",
     "start": "wrangler dev",
     "test": "vitest",
     "check-types": "tsc -p tsconfig.json --noEmit",
