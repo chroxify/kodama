@@ -1,39 +1,33 @@
-// Generation
-export { applyMood, generate } from './generation/generate';
-
-// Gradients
-export { DEFAULT_GRADIENTS, getGradient } from './palette/gradients';
-
-// Feature shape data
-export {
-  ACCESSORY_SHAPES,
-  CHEEK_SHAPES,
-  EYE_SHAPES,
-  EYEBROW_SHAPES,
-  MOUTH_SHAPES,
-} from './svg/features';
-
-// SVG rendering
-export { createKodama } from './svg/svg';
 export type {
-  AccessoryType,
-  Animation,
-  AvatarData,
-  CheekType,
-  CompoundFaceData,
-  CreateKodamaOptions,
-  CreateKodamaResult,
-  DetailLevel,
-  EyebrowType,
-  EyeType,
+  CreateKodamaDefaultOptions,
+  CreateKodamaWithConfiguredVariantOptions,
+  CreateKodamaWithVariantOptions,
+} from './engine/create-kodama';
+export { createKodama } from './engine/create-kodama';
+
+export { createVariantFactory, isConfiguredVariant, isVariantFactory } from './engine/factory';
+export { pickVariantProps, resolveVariantInput } from './engine/resolve';
+export type { SvgShellOptions } from './render/shell';
+export { renderSvgShell } from './render/shell';
+export type {
+  AnyVariantFactory,
+  AnyVariantModule,
+  ConfiguredVariant,
   FeatureShape,
-  GenerateOptions,
   GradientPair,
-  Mood,
-  MouthType,
+  KodamaShape,
+  NeverProps,
   Rotation,
-  Variant,
+  VariantCapabilities,
+  VariantContext,
+  VariantFactory,
+  VariantInput,
+  VariantModule,
+  VariantModuleOf,
+  VariantPropsFromModule,
+  VariantPropsOf,
+  VariantResultFromModule,
+  VariantResultOf,
 } from './types';
 
-// Utility
 export { hash } from './utils/hash';

@@ -1,3 +1,15 @@
-export type { Animation, DetailLevel, GradientPair, Mood, Variant } from '../core/types';
-export type { Depth, KodamaProps } from './kodama';
+export type {
+  ConfiguredVariant,
+  KodamaShape,
+  VariantFactory,
+  VariantInput,
+  VariantPropsOf,
+  VariantResultOf,
+} from '../core/types';
+export type {
+  KodamaDefaultProps,
+  KodamaProps,
+  KodamaWithConfiguredVariantProps,
+  KodamaWithVariantProps,
+} from './kodama';
 export { Kodama } from './kodama';

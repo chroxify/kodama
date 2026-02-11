@@ -1,4 +1,4 @@
-import type { GradientPair } from '../types';
+import type { GradientPair } from '../../core/types';
 
 export const DEFAULT_GRADIENTS: readonly GradientPair[] = [
   { from: '#E8D5F5', to: '#C7A4E0' },

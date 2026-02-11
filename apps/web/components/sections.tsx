@@ -1,4 +1,5 @@
 import { Kodama } from 'kodama-id/react';
+import { faces } from 'kodama-id/variants';
 import { GRADIENTS, HERO_NAMES, MOODS, VARIETY_NAMES } from '../lib/constants';
 import { CodeBlock, CopyIcon, Section } from './shared';
 
@@ -13,10 +14,10 @@ export function HeroSection() {
       <button
         type='button'
         className='mb-1 inline-flex w-fit cursor-pointer items-center gap-2 bg-transparent p-0 font-mono text-[0.6875rem] text-black/40 transition-colors hover:text-black/65'
-        onClick={() => navigator.clipboard?.writeText('npm install kodama-id')}
+        onClick={() => navigator.clipboard?.writeText('bun install kodama-id')}
         title='Copy to clipboard'
       >
-        <code className='bg-transparent p-0 text-inherit'>npm install kodama-id</code>
+        <code className='bg-transparent p-0 text-inherit'>bun install kodama-id</code>
         <span className='opacity-70'>
           <CopyIcon />
         </span>
@@ -171,21 +172,31 @@ export function VariantsSection() {
   return (
     <Section title='Variants'>
       <p>
-        Two background styles: <code>gradient</code> (default) with radial gradient rendering, and{' '}
-        <code>solid</code> with flat color fills.
+        Variants are pluggable visual styles. Each variant defines its own set of props — moods, animations,
+        detail levels, and more. Pass a variant factory directly or pre-configure it with a descriptor.
       </p>
 
-      <CodeBlock>{`<Kodama name="luna" variant="gradient" />
-<Kodama name="luna" variant="solid" />`}</CodeBlock>
+      <CodeBlock>{`import { faces } from "kodama-id/variants";
+
+// Pass directly — configure via props
+<Kodama name="luna" variant={faces} background="solid" mood="happy" />
+
+// Or pre-configure with a descriptor
+<Kodama name="luna" variant={faces({ background: "solid", detailLevel: "full" })} />`}</CodeBlock>
 
       <div className='mt-3 flex flex-wrap items-center gap-4'>
         <div className='flex flex-col items-center gap-1.5'>
-          <Kodama name='luna' size={56} variant='gradient' detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>gradient</span>
+          <Kodama name='faces' size={56} variant={faces} detailLevel='full' />
+          <span className='text-[0.6875rem] font-[450] text-black/40'>Faces</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
-          <Kodama name='luna' size={56} variant='solid' detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>solid</span>
+          <div
+            className='flex items-center justify-center rounded-full bg-black/[0.04]'
+            style={{ width: 56, height: 56 }}
+          >
+            <span className='select-none text-base text-black/20'>?</span>
+          </div>
+          <span className='text-[0.6875rem] font-[450] text-black/40'>Create your own</span>
         </div>
       </div>
     </Section>
@@ -226,7 +237,7 @@ export function AnimationsSection() {
   animations={["blink", "float", "sway", "eyeWander"]}
 />`}</CodeBlock>
 
-      <div className='mt-3 grid grid-cols-7 gap-3 max-[600px]:grid-cols-3'>
+      <div className='mt-3 grid grid-cols-4 gap-3 max-[600px]:grid-cols-3'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='blink-demo' size={48} animations={['blink']} detailLevel='full' />
           <span className='text-[0.6875rem] font-[450] text-black/40'>blink</span>
@@ -248,18 +259,46 @@ export function AnimationsSection() {
           <span className='text-[0.6875rem] font-[450] text-black/40'>eyebrowBounce</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
-          <Kodama name='glance-demo' size={48} animations={['glance']} detailLevel='full' />
+          <Kodama name='glance-demo' size={48} animations={['glance']} detailLevel='full' depth='dramatic' />
           <span className='text-[0.6875rem] font-[450] text-black/40'>glance</span>
+        </div>
+        <div className='flex flex-col items-center gap-1.5'>
+          <Kodama name='entrance-demo' size={48} animations={['entrance']} detailLevel='full' />
+          <span className='text-[0.6875rem] font-[450] text-black/40'>entrance</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama
             name='all-anim'
             size={48}
-            animations={['blink', 'float', 'sway', 'eyeWander', 'eyebrowBounce', 'glance']}
+            animations={['blink', 'float', 'sway', 'eyeWander', 'eyebrowBounce']}
             detailLevel='full'
           />
           <span className='text-[0.6875rem] font-[450] text-black/40'>combined</span>
         </div>
+      </div>
+    </Section>
+  );
+}
+
+export function ShapeSection() {
+  return (
+    <Section title='Shape'>
+      <p>
+        Control the avatar shape with the <code>shape</code> prop. Applies to both the React component and SVG
+        output.
+      </p>
+
+      <CodeBlock>{`<Kodama name="user" shape="circle" />
+<Kodama name="user" shape="squircle" />
+<Kodama name="user" shape="square" />`}</CodeBlock>
+
+      <div className='mt-3 flex flex-wrap items-center gap-4'>
+        {(['circle', 'squircle', 'square'] as const).map((s) => (
+          <div key={s} className='flex flex-col items-center gap-1.5'>
+            <Kodama name='shape-demo' size={56} shape={s} detailLevel='full' animations={['blink']} />
+            <span className='text-[0.6875rem] font-[450] text-black/40'>{s}</span>
+          </div>
+        ))}
       </div>
     </Section>
   );
@@ -270,7 +309,7 @@ export function DepthEffectsSection() {
     <Section title='3D Effects'>
       <p>
         Four depth levels for CSS 3D perspective transforms. The face tilts based on the deterministic
-        rotation, and flattens on hover when <code>interactive</code> is enabled.
+        rotation. In React, the face flattens on hover when <code>interactive</code> is enabled.
       </p>
 
       <CodeBlock>{`<Kodama name="user" depth="dramatic" />`}</CodeBlock>
@@ -390,7 +429,7 @@ export function ApiSection() {
 <img src="https://kodama.example.com/alice" />
 
 <!-- With options -->
-<img src="https://kodama.example.com/alice?size=256&mood=happy" />`}</CodeBlock>
+<img src="https://kodama.example.com/alice?variant=faces&size=256&mood=happy&background=solid" />`}</CodeBlock>
 
       <p>
         All parameters match the React props by name. The avatar <code>name</code> is the URL path —
@@ -398,7 +437,7 @@ export function ApiSection() {
       </p>
 
       <CodeBlock>{`# Full example
-/alice?size=256&mood=cool&detailLevel=full&animations=blink,float`}</CodeBlock>
+/alice?variant=faces&size=256&shape=squircle&background=gradient&mood=cool&detailLevel=full&depth=dramatic&animations=blink,float`}</CodeBlock>
     </Section>
   );
 }
@@ -419,22 +458,28 @@ export function ReferenceSection() {
     </span>
   );
 
+  const thead = (
+    <thead>
+      <tr>
+        <th className={th}>Prop / Param</th>
+        <th className={th}>Type</th>
+        <th className={th}>Default</th>
+        <th className={th}>Description</th>
+      </tr>
+    </thead>
+  );
+
   return (
     <Section title='Reference'>
       <p>
         Props and API params share the same names. In the API, <code>name</code> is the URL path — all others
         are query params.
       </p>
-      <div className='mt-2 overflow-x-auto'>
+
+      <h4 className='mt-4 mb-1 text-[0.75rem] font-[560] text-black/60'>Global</h4>
+      <div className='overflow-x-auto'>
         <table className='w-full border-collapse text-[0.8125rem]'>
-          <thead>
-            <tr>
-              <th className={th}>Prop / Param</th>
-              <th className={th}>Type</th>
-              <th className={th}>Default</th>
-              <th className={th}>Description</th>
-            </tr>
-          </thead>
+          {thead}
           <tbody>
             <tr>
               <td className={tdName}>name</td>
@@ -444,12 +489,43 @@ export function ReferenceSection() {
             </tr>
             <tr>
               <td className={tdName}>size</td>
-              <td className={tdType}>number | string</td>
+              <td className={tdType}>number</td>
               <td className={tdDefault}>40 / 128</td>
               <td className={tdDesc}>Avatar dimensions in pixels. React default: 40. API default: 128.</td>
             </tr>
             <tr>
+              <td className={tdName}>shape</td>
+              <td className={tdType}>{'"circle" | "squircle" | "square"'}</td>
+              <td className={tdDefault}>{'"circle"'}</td>
+              <td className={tdDesc}>
+                Avatar clipping shape. Squircle uses Apple-style continuous curvature.
+              </td>
+            </tr>
+            <tr>
               <td className={tdName}>variant</td>
+              <td className={tdType}>VariantFactory</td>
+              <td className={tdDefault}>faces</td>
+              <td className={tdDesc}>
+                Variant plugin factory, e.g. <code>faces</code>
+              </td>
+            </tr>
+            <tr>
+              <td className={tdName}>interactive{reactOnly}</td>
+              <td className={tdType}>boolean</td>
+              <td className={tdDefault}>true</td>
+              <td className={tdDesc}>Enable hover interaction</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-black/60'>Faces variant</h4>
+      <div className='overflow-x-auto'>
+        <table className='w-full border-collapse text-[0.8125rem]'>
+          {thead}
+          <tbody>
+            <tr>
+              <td className={tdName}>background</td>
               <td className={tdType}>{'"gradient" | "solid"'}</td>
               <td className={tdDefault}>{'"gradient"'}</td>
               <td className={tdDesc}>Background style</td>
@@ -464,16 +540,22 @@ export function ReferenceSection() {
               <td className={tdName}>detailLevel</td>
               <td className={tdType}>{'"minimal" | "basic" | "standard" | "full"'}</td>
               <td className={tdDefault}>auto</td>
-              <td className={tdDesc}>Feature visibility level</td>
+              <td className={tdDesc}>Feature visibility level. Adapts to size by default.</td>
+            </tr>
+            <tr>
+              <td className={tdName}>depth</td>
+              <td className={tdType}>{'"none" | "subtle" | "medium" | "dramatic"'}</td>
+              <td className={tdDefault}>{'"dramatic"'}</td>
+              <td className={tdDesc}>3D perspective transform depth</td>
             </tr>
             <tr>
               <td className={tdName}>animations</td>
               <td className={tdType}>Animation[]</td>
               <td className={tdDefault}>[]</td>
               <td className={tdDesc}>
-                Animations to enable: <code>blink</code> - <code>float</code> - <code>sway</code> -{' '}
-                <code>eyeWander</code> - <code>eyebrowBounce</code> - <code>glance</code> -{' '}
-                <code>entrance</code>. API: comma-separated.
+                <code>blink</code> - <code>float</code> - <code>sway</code> - <code>eyeWander</code> -{' '}
+                <code>eyebrowBounce</code> - <code>glance</code> - <code>entrance</code>. API:
+                comma-separated.
               </td>
             </tr>
             <tr>
@@ -483,18 +565,6 @@ export function ReferenceSection() {
               <td className={tdDesc}>
                 Custom gradient palette. API: hex pairs like <code>E8D5F5-C7A4E0,FFE0D0-FFB899</code>
               </td>
-            </tr>
-            <tr>
-              <td className={tdName}>depth{reactOnly}</td>
-              <td className={tdType}>{'"none" | "subtle" | "medium" | "dramatic"'}</td>
-              <td className={tdDefault}>{'"dramatic"'}</td>
-              <td className={tdDesc}>3D perspective transform depth</td>
-            </tr>
-            <tr>
-              <td className={tdName}>interactive{reactOnly}</td>
-              <td className={tdType}>boolean</td>
-              <td className={tdDefault}>true</td>
-              <td className={tdDesc}>Enable hover interaction</td>
             </tr>
           </tbody>
         </table>

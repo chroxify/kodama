@@ -1,7 +1,16 @@
-import type { Animation, DetailLevel, GradientPair, Mood, Variant } from 'kodama-id';
+import type { GradientPair, KodamaShape } from 'kodama-id';
 import { createKodama } from 'kodama-id';
+import type {
+  FacesAnimation,
+  FacesBackgroundStyle,
+  FacesDepth,
+  FacesDetailLevel,
+  FacesMood,
+} from 'kodama-id/variants';
+import { faces } from 'kodama-id/variants';
 
-const VALID_VARIANTS: ReadonlySet<string> = new Set(['gradient', 'solid']);
+const VALID_VARIANTS: ReadonlySet<string> = new Set(['faces']);
+const VALID_BACKGROUNDS: ReadonlySet<string> = new Set(['gradient', 'solid']);
 const VALID_MOODS: ReadonlySet<string> = new Set(['happy', 'surprised', 'sleepy', 'cool', 'cheeky']);
 const VALID_DETAILS: ReadonlySet<string> = new Set(['minimal', 'basic', 'standard', 'full']);
 const VALID_ANIMATIONS: ReadonlySet<string> = new Set([
@@ -13,6 +22,8 @@ const VALID_ANIMATIONS: ReadonlySet<string> = new Set([
   'eyebrowBounce',
   'glance',
 ]);
+const VALID_SHAPES: ReadonlySet<string> = new Set(['circle', 'squircle', 'square']);
+const VALID_DEPTHS: ReadonlySet<string> = new Set(['none', 'subtle', 'medium', 'dramatic']);
 
 const YEAR_IN_SECONDS = 31_536_000;
 const CACHE_HEADERS = {
@@ -57,20 +68,29 @@ export default {
       return new Response('Not Found', { status: 404 });
     }
 
-    // Parse & validate params
     const p = url.searchParams;
+    const variantName = p.get('variant') ?? 'faces';
+
+    if (!VALID_VARIANTS.has(variantName)) {
+      return new Response('Unsupported variant', { status: 400 });
+    }
+
     const size = Math.min(Math.max(Number(p.get('size')) || 128, 16), 512);
-    const variant = VALID_VARIANTS.has(p.get('variant') ?? '') ? (p.get('variant') as Variant) : 'gradient';
-    const mood = VALID_MOODS.has(p.get('mood') ?? '') ? (p.get('mood') as Mood) : undefined;
+    const background = VALID_BACKGROUNDS.has(p.get('background') ?? '')
+      ? (p.get('background') as FacesBackgroundStyle)
+      : undefined;
+    const mood = VALID_MOODS.has(p.get('mood') ?? '') ? (p.get('mood') as FacesMood) : undefined;
     const detailLevel = VALID_DETAILS.has(p.get('detailLevel') ?? '')
-      ? (p.get('detailLevel') as DetailLevel)
+      ? (p.get('detailLevel') as FacesDetailLevel)
       : undefined;
     const animations = p
       .get('animations')
       ?.split(',')
-      .filter((a) => VALID_ANIMATIONS.has(a)) as Animation[] | undefined;
+      .filter((animation) => VALID_ANIMATIONS.has(animation)) as FacesAnimation[] | undefined;
 
-    // Parse gradients: ?gradients=E8D5F5-C7A4E0,FFE0D0-FFB899
+    const shape = VALID_SHAPES.has(p.get('shape') ?? '') ? (p.get('shape') as KodamaShape) : undefined;
+    const depth = VALID_DEPTHS.has(p.get('depth') ?? '') ? (p.get('depth') as FacesDepth) : undefined;
+
     let gradients: GradientPair[] | undefined;
     const gradientsParam = p.get('gradients');
     if (gradientsParam) {
@@ -84,7 +104,11 @@ export default {
       if (pairs.length > 0) gradients = pairs;
     }
 
-    const etag = `"${fnv1a(`${name}:${size}:${variant}:${mood ?? ''}:${detailLevel ?? ''}:${animations?.join(',') ?? ''}:${gradientsParam ?? ''}`).toString(36)}"`;
+    const etag = `"${fnv1a(
+      `${name}:${size}:${variantName}:${shape ?? ''}:${background ?? ''}:${mood ?? ''}:${detailLevel ?? ''}:${depth ?? ''}:${animations?.join(',') ?? ''}:${
+        gradientsParam ?? ''
+      }`
+    ).toString(36)}"`;
 
     if (request.headers.get('if-none-match') === etag) {
       return new Response(null, { status: 304, headers: CACHE_HEADERS });
@@ -93,9 +117,12 @@ export default {
     const { svg } = createKodama({
       name,
       size,
-      variant,
+      shape,
+      variant: faces,
+      background,
       mood,
       detailLevel,
+      depth,
       animations,
       gradients,
     });

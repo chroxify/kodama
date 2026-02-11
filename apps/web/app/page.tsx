@@ -15,6 +15,7 @@ import {
   PageFooter,
   QuickStartSection,
   ReferenceSection,
+  ShapeSection,
   VariantsSection,
 } from '@/components/sections';
 
@@ -41,6 +42,7 @@ export default function Home() {
         <VariantsSection />
         <MoodsSection />
         <AnimationsSection />
+        <ShapeSection />
         <DepthEffectsSection />
         <DetailLevelsSection />
         <CustomGradientsSection />

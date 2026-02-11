@@ -1,4 +1,4 @@
-import type { Mood } from 'kodama-id';
+import type { FacesMood } from 'kodama-id/variants';
 
 export const HERO_NAMES = ['Sakura', 'Atlas', 'Luna', 'Phoenix', 'Sage', 'Coral', 'Indigo', 'Wren'];
 
@@ -29,7 +29,7 @@ export const VARIETY_NAMES = [
   'xena',
 ] as const;
 
-export const MOODS: { mood: Mood; label: string; desc: string }[] = [
+export const MOODS: { mood: FacesMood; label: string; desc: string }[] = [
   { mood: 'happy', label: 'Happy', desc: 'Curved eyes, grin' },
   { mood: 'surprised', label: 'Surprised', desc: 'Round eyes, O mouth' },
   { mood: 'sleepy', label: 'Sleepy', desc: 'Line eyes, flat mouth' },

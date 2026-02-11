@@ -1,6 +1,13 @@
-import type { AccessoryType, CheekType, EyebrowType, EyeType, FeatureShape, MouthType } from '../types';
+import type { FeatureShape } from '../../core/types';
+import type {
+  FacesAccessoryType,
+  FacesCheekType,
+  FacesEyebrowType,
+  FacesEyeType,
+  FacesMouthType,
+} from './types';
 
-export const EYE_SHAPES: Record<EyeType, FeatureShape> = {
+export const EYE_SHAPES: Record<FacesEyeType, FeatureShape> = {
   round: {
     viewBox: '0 0 63 15',
     paths: [
@@ -49,7 +56,7 @@ export const EYE_SHAPES: Record<EyeType, FeatureShape> = {
   },
 };
 
-export const EYEBROW_SHAPES: Record<EyebrowType, FeatureShape | null> = {
+export const EYEBROW_SHAPES: Record<FacesEyebrowType, FeatureShape | null> = {
   arched: {
     viewBox: '0 0 63 8',
     paths: [],
@@ -77,7 +84,7 @@ export const EYEBROW_SHAPES: Record<EyebrowType, FeatureShape | null> = {
   none: null,
 };
 
-export const MOUTH_SHAPES: Record<MouthType, FeatureShape> = {
+export const MOUTH_SHAPES: Record<FacesMouthType, FeatureShape> = {
   smile: {
     viewBox: '0 0 30 16',
     paths: [],
@@ -115,7 +122,7 @@ export const MOUTH_SHAPES: Record<MouthType, FeatureShape> = {
   },
 };
 
-export const CHEEK_SHAPES: Record<CheekType, FeatureShape | null> = {
+export const CHEEK_SHAPES: Record<FacesCheekType, FeatureShape | null> = {
   blush: {
     viewBox: '0 0 70 12',
     paths: [],
@@ -127,7 +134,7 @@ export const CHEEK_SHAPES: Record<CheekType, FeatureShape | null> = {
   none: null,
 };
 
-export const ACCESSORY_SHAPES: Record<AccessoryType, FeatureShape | null> = {
+export const ACCESSORY_SHAPES: Record<FacesAccessoryType, FeatureShape | null> = {
   none: null,
   glasses: {
     viewBox: '0 0 63 20',

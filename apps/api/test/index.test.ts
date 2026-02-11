@@ -45,16 +45,24 @@ describe('kodama API', () => {
     expect(plain).not.toBe(happy);
   });
 
-  it('applies variant param', async () => {
-    const gradient = await (await SELF.fetch('http://localhost:8786/variant-test?variant=gradient')).text();
-    const solid = await (await SELF.fetch('http://localhost:8786/variant-test?variant=solid')).text();
+  it('applies background param for faces variant', async () => {
+    const gradient = await (
+      await SELF.fetch('http://localhost:8786/variant-test?variant=faces&background=gradient')
+    ).text();
+    const solid = await (
+      await SELF.fetch('http://localhost:8786/variant-test?variant=faces&background=solid')
+    ).text();
     expect(gradient).not.toBe(solid);
   });
 
-  it('ignores invalid params', async () => {
-    const res = await SELF.fetch('http://localhost:8786/invalid-params?mood=nope&variant=bad');
+  it('rejects unsupported variants', async () => {
+    const res = await SELF.fetch('http://localhost:8786/invalid-variant?variant=bad');
+    expect(res.status).toBe(400);
+  });
+
+  it('ignores invalid faces params when variant is valid', async () => {
+    const res = await SELF.fetch('http://localhost:8786/invalid-params?variant=faces&mood=nope');
     expect(res.status).toBe(200);
-    const body = await res.text();
-    expect(body).toContain('<svg');
+    expect(await res.text()).toContain('<svg');
   });
 });

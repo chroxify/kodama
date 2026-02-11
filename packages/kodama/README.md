@@ -1,11 +1,29 @@
 # kodama-id
 
-Single-package Kodama library with two source areas:
+Kodama is a deterministic avatar library with a plugin architecture.
 
-- `src/core`: framework-agnostic deterministic avatar logic
-- `src/react`: React wrappers/components powered by `src/core`
+## Entry points
 
-## Entry Points
+- `kodama-id` core engine and `createKodama`
+- `kodama-id/react` React component
+- `kodama-id/variants` built-in variant factories (`faces`)
 
-- `kodama-id`
-- `kodama-id/react`
+## Quick examples
+
+```ts
+import { createKodama } from 'kodama-id';
+import { faces } from 'kodama-id/variants';
+
+createKodama({ name: 'sakura' });
+createKodama({ name: 'sakura', variant: faces, mood: 'happy', background: 'solid' });
+createKodama({ name: 'sakura', variant: faces({ mood: 'cool', background: 'gradient' }) });
+```
+
+```tsx
+import { Kodama } from 'kodama-id/react';
+import { faces } from 'kodama-id/variants';
+
+<Kodama name='sakura' />
+<Kodama name='sakura' variant={faces} mood='happy' />
+<Kodama name='sakura' variant={faces({ mood: 'cool', background: 'solid' })} />
+```
