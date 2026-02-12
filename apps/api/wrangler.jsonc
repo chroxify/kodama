@@ -6,6 +6,7 @@
   "observability": {
     "enabled": true
   },
+  "account_id": "e8563b02f2bf2b6a136f2781445a486f",
   "routes": [
     {
       "pattern": "api.kodama.sh",
