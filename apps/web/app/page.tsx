@@ -1,53 +1,43 @@
-'use client';
+import type { Metadata } from 'next';
+import { PageContent } from './page-content';
 
-import { useState } from 'react';
-import {
-  AnimationsSection,
-  ColorsSection,
-  CombinationsSection,
-  CustomGradientsSection,
-  DepthEffectsSection,
-  DetailLevelsSection,
-  DeterministicSection,
-  HeroSection,
-  MoodsSection,
-  PageFooter,
-  QuickStartSection,
-  ReferenceSection,
-  ShapeSection,
-  VariantsSection,
-} from '@/components/sections';
+type Props = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+
+  const ogParams = new URLSearchParams();
+  for (const key of ['name', 'shape', 'depth', 'detail', 'mood', 'bg']) {
+    const val = params[key];
+    if (typeof val === 'string' && val) ogParams.set(key, val);
+  }
+  const ogQuery = ogParams.size > 0 ? `?${ogParams.toString()}` : '';
+  const ogUrl = `/api/og${ogQuery}`;
+
+  const name = typeof params.name === 'string' && params.name ? params.name : undefined;
+
+  return {
+    ...(name && {
+      title: `${name} — Kodama`,
+      openGraph: {
+        title: `${name} — Kodama`,
+        images: [{ url: ogUrl, width: 1200, height: 630 }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${name} — Kodama`,
+        images: [ogUrl],
+      },
+    }),
+    ...(!name && {
+      openGraph: { images: [{ url: ogUrl, width: 1200, height: 630 }] },
+      twitter: { card: 'summary_large_image' as const, images: [ogUrl] },
+    }),
+  };
+}
 
 export default function Home() {
-  const [tryName, setTryName] = useState('kodama');
-
-  return (
-    <>
-      <article
-        className='mx-auto flex max-w-152 flex-col px-6 pb-16 pt-14
-        [&_p]:text-[0.875rem] [&_p]:font-[450] [&_p]:leading-6 [&_p]:tracking-[-0.005em] [&_p]:text-foreground-secondary
-        [&_p+p]:mt-3
-        [&_p_strong]:font-semibold [&_p_strong]:text-heading
-        [&_code]:rounded [&_code]:bg-code-inline-background [&_code]:px-[0.35rem] [&_code]:py-[0.1rem]
-        [&_code]:font-mono [&_code]:text-[0.8125rem] [&_code]:text-code-foreground
-        [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit [&_pre_code]:text-xs'
-      >
-        <HeroSection />
-        <QuickStartSection tryName={tryName} setTryName={setTryName} />
-        <DeterministicSection />
-        <CombinationsSection />
-        <ColorsSection />
-        <VariantsSection />
-        <MoodsSection />
-        <AnimationsSection />
-        <ShapeSection />
-        <DepthEffectsSection />
-        <DetailLevelsSection />
-        <CustomGradientsSection />
-        <ReferenceSection />
-      </article>
-
-      <PageFooter />
-    </>
-  );
+  return <PageContent />;
 }

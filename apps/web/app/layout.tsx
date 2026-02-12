@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist_Mono, Instrument_Serif } from 'next/font/google';
 import localFont from 'next/font/local';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import './globals.css';
 
 const openRunde = localFont({
@@ -24,9 +25,32 @@ const instrumentSerif = Instrument_Serif({
   weight: '400',
 });
 
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : 'http://localhost:3000';
+
 export const metadata: Metadata = {
-  title: 'Kodama Monorepo Demo',
-  description: 'Demo app for kodama-id and kodama-id/react',
+  title: 'Kodama — Animated avatar system for developers',
+  description:
+    'Generate unique, fully animated avatars from any string. 145,152 combinations with blinking, floating, and glancing animations — all deterministic and open-source.',
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    title: 'Kodama — Animated avatar system for developers',
+    description:
+      'Generate unique, fully animated avatars from any string. Deterministic, customizable, and open-source.',
+    siteName: 'Kodama',
+    locale: 'en_US',
+    type: 'website',
+    images: [{ url: '/api/og', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kodama — Animated avatar system for developers',
+    description:
+      'Generate unique, fully animated avatars from any string. Deterministic, customizable, and open-source.',
+    images: ['/api/og'],
+  },
+  keywords: ['avatar', 'generative', 'animated', 'deterministic', 'open-source', 'react', 'svg'],
 };
 
 export default function RootLayout({
@@ -37,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${openRunde.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}>
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
       </body>
     </html>
   );

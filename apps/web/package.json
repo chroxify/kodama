@@ -9,8 +9,10 @@
     "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "kodama-id": "workspace:*",
     "next": "16.1.6",
+    "nuqs": "^2.8.8",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

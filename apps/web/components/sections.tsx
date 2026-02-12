@@ -1,6 +1,7 @@
 import { Kodama } from 'kodama-id/react';
 import { faces } from 'kodama-id/variants';
 import Link from 'next/link';
+import { parseAsArrayOf, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs';
 import { useCallback, useRef, useState } from 'react';
 import { GRADIENTS, HERO_NAMES, MOODS, VARIETY_NAMES } from '../lib/constants';
 import { IconCheck, IconCopy, IconGitHub, IconShuffle } from '../lib/icons';
@@ -87,7 +88,7 @@ export function HeroSection() {
           rel='noopener noreferrer'
           title='GitHub'
         >
-          <IconGitHub className='h-4 w-4 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
+          <IconGitHub className='h-4.5 w-4.5 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
         </Link>
       </div>
 
@@ -100,9 +101,10 @@ export function HeroSection() {
       </h1>
 
       <p className='text-[0.9375rem] leading-[1.55]'>
-        Kodama (/koˈdama/) is an open-source library that generates unique, animated character avatars from
-        any string. Same input, same avatar, every time. <strong>145,152</strong> possible combinations across
-        16 pastel gradients, 6 eye styles, 7 mouths, 4 eyebrows, and 3 accessories.
+        Kodama (/koˈdama/) is an open-source avatar system that generates unique characters from any string.
+        Unlike traditional avatars, every Kodama is <strong>fully animated</strong> — blinking, floating,
+        glancing — right out of the box. <strong>145,152</strong> unique combinations ensure no two avatars
+        look alike.
       </p>
 
       <div className='mt-6 flex h-14 flex-wrap items-center gap-2.5 overflow-hidden'>
@@ -254,22 +256,29 @@ function AnimationRow({
   );
 }
 
-export function QuickStartSection({
-  tryName,
-  setTryName,
-}: {
-  tryName: string;
-  setTryName: (name: string) => void;
-}) {
-  const [shape, setShape] = useState<(typeof SHAPE_OPTIONS)[number]>('circle');
-  const [depth, setDepth] = useState<(typeof DEPTH_OPTIONS)[number]>('dramatic');
-  const [detailLevel, setDetailLevel] = useState<(typeof DETAIL_OPTIONS)[number]>('full');
-  const [mood, setMood] = useState<(typeof MOOD_OPTIONS)[number]>('none');
-  const [background, setBackground] = useState<(typeof BACKGROUND_OPTIONS)[number]>('gradient');
-  const [animations, setAnimations] = useState<FacesAnimation[]>(['blink']);
+export function QuickStartSection() {
+  const [tryName, setTryName] = useQueryState('name', parseAsString.withDefault('kodama'));
+  const [shape, setShape] = useQueryState('shape', parseAsStringLiteral(SHAPE_OPTIONS).withDefault('circle'));
+  const [depth, setDepth] = useQueryState(
+    'depth',
+    parseAsStringLiteral(DEPTH_OPTIONS).withDefault('dramatic')
+  );
+  const [detailLevel, setDetailLevel] = useQueryState(
+    'detail',
+    parseAsStringLiteral(DETAIL_OPTIONS).withDefault('full')
+  );
+  const [mood, setMood] = useQueryState('mood', parseAsStringLiteral(MOOD_OPTIONS).withDefault('none'));
+  const [background, setBackground] = useQueryState(
+    'bg',
+    parseAsStringLiteral(BACKGROUND_OPTIONS).withDefault('gradient')
+  );
+  const [animations, setAnimations] = useQueryState(
+    'animations',
+    parseAsArrayOf(parseAsStringLiteral(ANIMATION_OPTIONS), ',').withDefault(['blink'])
+  );
   const [spinning, setSpinning] = useState(false);
 
-  const displayName = tryName || 'kodama';
+  const displayName = tryName;
 
   const apiParams: string[] = [];
   if (shape !== 'circle') apiParams.push(`shape=${shape}`);
@@ -828,7 +837,7 @@ export function ReferenceSection() {
         </table>
       </ScrollFade>
 
-      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>Faces variant</h4>
+      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>Faces</h4>
       <ScrollFade>
         <table className='w-full border-collapse text-[0.8125rem]'>
           {thead}
@@ -886,15 +895,17 @@ export function ReferenceSection() {
 
 export function PageFooter() {
   return (
-    <footer className='mx-auto flex max-w-152 items-center justify-between border-t border-border px-6 py-3 text-xs text-foreground-tertiary'>
-      <span>Kodama — deterministic, animated, open-source avatars.</span>
+    <footer className='mx-auto flex max-w-152 items-center justify-between border-t border-border px-6 py-4 text-xs text-foreground-tertiary'>
+      <span>
+        <span className='hidden sm:inline'>Kodama — </span>Deterministic, animated, open-source avatars.
+      </span>
       <Link
         href='https://github.com/chroxify/kodama'
         target='_blank'
         rel='noopener noreferrer'
         title='GitHub'
       >
-        <IconGitHub className='h-3.5 w-3.5 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
+        <IconGitHub className='h-4 w-4 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
       </Link>
     </footer>
   );
