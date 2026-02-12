@@ -1,6 +1,6 @@
 import type { FacesMood } from 'kodama-id/variants';
 
-export const HERO_NAMES = ['Sakura', 'Atlas', 'Luna', 'Phoenix', 'Sage', 'Coral', 'Indigo', 'Wren'];
+export const HERO_NAMES = ['Sakura', 'Atlas', 'Luna', 'Phoenix', 'Sage', 'Octavia', 'Indigo', 'Wren'];
 
 export const VARIETY_NAMES = [
   'alice',

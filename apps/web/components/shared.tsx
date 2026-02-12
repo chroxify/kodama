@@ -285,21 +285,21 @@ function renderTokens(tokens: Token[]): ReactNode[] {
 export function CodeBlock({ children }: { children: string }) {
   const tokens = tokenizeJSX(children);
   const ref = useRef<HTMLPreElement>(null);
-  const [overflows, setOverflows] = useState(false);
 
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    setOverflows(el.scrollWidth > el.clientWidth);
+    if (el.scrollWidth <= el.clientWidth) return;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (!isSafari) {
+      el.style.paddingBottom = '6px';
+    }
   }, [children]);
 
   return (
     <pre
       ref={ref}
-      className={cx(
-        'my-2 last:mb-0 overflow-x-auto rounded-lg border border-border bg-code-background px-4 pt-3 font-mono text-xs leading-[1.6] text-code-block-foreground',
-        overflows ? 'pb-1.5' : 'pb-3'
-      )}
+      className='my-2 last:mb-0 overflow-x-auto rounded-lg border border-border bg-code-background px-4 py-3 font-mono text-xs leading-[1.6] text-code-block-foreground'
     >
       <code>{renderTokens(tokens)}</code>
     </pre>

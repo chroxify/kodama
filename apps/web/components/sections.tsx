@@ -1,8 +1,9 @@
 import { Kodama } from 'kodama-id/react';
 import { faces } from 'kodama-id/variants';
+import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
 import { GRADIENTS, HERO_NAMES, MOODS, VARIETY_NAMES } from '../lib/constants';
-import { IconCheck, IconCopy, IconShuffle } from '../lib/icons';
+import { IconCheck, IconCopy, IconGitHub, IconShuffle } from '../lib/icons';
 import { CodeBlock, ScrollFade, Section } from './shared';
 
 const PACKAGE_MANAGERS = [
@@ -54,21 +55,19 @@ function InstallBanner() {
         {command.command.split(' ').slice(1).join(' ')} kodama-id
       </code>
       <span className='relative inline-flex h-3.5 w-3.5'>
-        <span
-          className='inline-flex h-3.5 w-3.5 transition-all duration-200 ease-in-out'
+        <IconCopy
+          className='h-3.5 w-3.5 transition-all duration-200 ease-in-out'
           style={{
             opacity: copied ? 0 : 0.7,
             transform: copied ? 'scale(0.75)' : 'scale(1)',
           }}
-          dangerouslySetInnerHTML={{ __html: IconCopy }}
         />
-        <span
-          className='absolute inset-0 inline-flex h-3.5 w-3.5 items-center justify-center transition-all duration-200 ease-in-out'
+        <IconCheck
+          className='absolute inset-0 h-3.5 w-3.5 transition-all duration-200 ease-in-out'
           style={{
             opacity: copied ? 0.7 : 0,
             transform: copied ? 'scale(1)' : 'scale(0.75)',
           }}
-          dangerouslySetInnerHTML={{ __html: IconCheck }}
         />
       </span>
     </button>
@@ -78,10 +77,18 @@ function InstallBanner() {
 export function HeroSection() {
   return (
     <header className='relative flex flex-col gap-2'>
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center justify-between'>
         <span className='inline-flex items-center gap-1.5 text-[0.9375rem] font-medium tracking-[-0.01em] text-heading'>
           Kodama <span className='text-[0.8125rem] text-foreground-tertiary'>木魅</span>
         </span>
+        <Link
+          href='https://github.com/chroxify/kodama'
+          target='_blank'
+          rel='noopener noreferrer'
+          title='GitHub'
+        >
+          <IconGitHub className='h-4 w-4 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
+        </Link>
       </div>
 
       <InstallBanner />
@@ -93,12 +100,12 @@ export function HeroSection() {
       </h1>
 
       <p className='text-[0.9375rem] leading-[1.55]'>
-        Kodama (/koˈdama/) generates unique, animated character avatars from any string. Same input, same
-        avatar, single time. <strong>145,152</strong> possible combinations across 16 pastel gradients, 6 eye
-        styles, 7 mouths, 4 eyebrows, and 3 accessories.
+        Kodama (/koˈdama/) is an open-source library that generates unique, animated character avatars from
+        any string. Same input, same avatar, every time. <strong>145,152</strong> possible combinations across
+        16 pastel gradients, 6 eye styles, 7 mouths, 4 eyebrows, and 3 accessories.
       </p>
 
-      <div className='mt-6 flex flex-wrap items-center gap-2.5'>
+      <div className='mt-6 flex h-14 flex-wrap items-center gap-2.5 overflow-hidden'>
         {HERO_NAMES.map((name, i) => (
           <Kodama
             key={name}
@@ -293,7 +300,7 @@ export function QuickStartSection({
     <Section title='Quick Start'>
       <p>
         Try it out — enter a name, adjust the options, and watch the avatar update live.
-        <br /> Drop it into your project with the API or React component.
+        <br className='hidden sm:block' /> Drop it into your project with the API or React component.
       </p>
 
       <div className='mt-3 flex items-start gap-5'>
@@ -315,10 +322,7 @@ export function QuickStartSection({
             onChange={setBackground}
           />
           <OptionRow label='Shape' value={shape} options={SHAPE_OPTIONS} onChange={setShape} />
-          <OptionRow label='Depth' value={depth} options={DEPTH_OPTIONS} onChange={setDepth} />
           <OptionRow label='Detail' value={detailLevel} options={DETAIL_OPTIONS} onChange={setDetailLevel} />
-          <OptionRow label='Mood' value={mood} options={MOOD_OPTIONS} onChange={setMood} />
-          <AnimationRow value={animations} onChange={setAnimations} />
         </ul>
 
         <div className='flex flex-col items-center gap-2'>
@@ -348,17 +352,22 @@ export function QuickStartSection({
             className='cursor-pointer bg-transparent p-0 text-foreground-tertiary transition-colors hover:text-foreground-secondary'
             title='Randomize'
           >
-            <span
-              className='inline-flex h-3.5 w-3.5'
+            <IconShuffle
+              className='h-3.5 w-3.5'
               style={{
                 transform: spinning ? 'rotate(180deg) scale(0.95)' : 'rotate(0deg) scale(1)',
                 transition: spinning ? 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
               }}
-              dangerouslySetInnerHTML={{ __html: IconShuffle }}
             />
           </button>
         </div>
       </div>
+
+      <ul className='flex list-none flex-col gap-1 pl-0'>
+        <OptionRow label='Depth' value={depth} options={DEPTH_OPTIONS} onChange={setDepth} />
+        <OptionRow label='Mood' value={mood} options={MOOD_OPTIONS} onChange={setMood} />
+        <AnimationRow value={animations} onChange={setAnimations} />
+      </ul>
 
       <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>API</h4>
       <p>
@@ -389,7 +398,7 @@ export function DeterministicSection() {
         Fully deterministic, with nothing stored or fetched.
       </p>
 
-      <div className='mt-3 flex flex-wrap gap-10'>
+      <div className='mt-3 flex flex-wrap gap-5 sm:gap-10 justify-between sm:justify-start'>
         <div className='flex flex-col items-center gap-1.5'>
           <div className='flex gap-1.5'>
             <Kodama name='alice' size={44} detailLevel='full' />
@@ -426,24 +435,24 @@ export function CombinationsSection() {
       </p>
 
       <ul className='mt-2 flex list-none flex-col gap-1 pl-0'>
-        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='inline-block min-w-22 font-[550] text-heading'>Eyes</strong>
+        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='w-22 shrink-0 font-[550] text-heading'>Eyes</strong>
           <span className='text-foreground-tertiary'>round - cross - line - curved - wink - heart</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='inline-block min-w-22 font-[550] text-heading'>Mouths</strong>
+        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='w-22 shrink-0 font-[550] text-heading'>Mouths</strong>
           <span className='text-foreground-tertiary'>smile - grin - o - cat - tongue - smirk - flat</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='inline-block min-w-22 font-[550] text-heading'>Eyebrows</strong>
+        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='w-22 shrink-0 font-[550] text-heading'>Eyebrows</strong>
           <span className='text-foreground-tertiary'>arched - flat - raised - none</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='inline-block min-w-22 font-[550] text-heading'>Cheeks</strong>
+        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='w-22 shrink-0 font-[550] text-heading'>Cheeks</strong>
           <span className='text-foreground-tertiary'>blush - none</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='inline-block min-w-22 font-[550] text-heading'>Accessories</strong>
+        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='w-22 shrink-0 font-[550] text-heading'>Accessories</strong>
           <span className='text-foreground-tertiary'>glasses - sunglasses - none</span>
         </li>
       </ul>
@@ -464,7 +473,7 @@ export function ColorsSection() {
         Sixteen soft pastel gradients with radial rendering for a subtle 3D appearance. <br /> Pass in a
         custom <code>gradients</code> array to use your own palette.
       </p>
-      <div className='mt-5 grid grid-cols-4 gap-4 max-[600px]:grid-cols-2'>
+      <div className='mt-5 grid grid-cols-4 gap-4'>
         {GRADIENTS.map(({ name, pair }) => (
           <div key={name} className='flex flex-col items-center gap-1.5'>
             <Kodama name={name} size={52} gradients={pair} detailLevel='full' />
@@ -499,8 +508,12 @@ export function VariantsSection() {
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <div
-            className='flex items-center justify-center rounded-full bg-surface-placeholder'
-            style={{ width: 56, height: 56 }}
+            className='flex items-center justify-center rounded-full'
+            style={{
+              width: 56,
+              height: 56,
+              background: 'radial-gradient(circle at 35% 35%, #efefef, #dedede)',
+            }}
           >
             <span className='select-none text-base text-foreground-muted'>?</span>
           </div>
@@ -557,7 +570,7 @@ export function AnimationsSection() {
   ]}
 />`}</CodeBlock>
 
-      <div className='mt-5 grid grid-cols-4 gap-3 max-[600px]:grid-cols-3'>
+      <div className='mt-5 grid grid-cols-4 gap-3 max-[600px]:grid-cols-4'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='blink-demo' size={48} animations={['blink']} detailLevel='full' />
           <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>blink</span>
@@ -751,7 +764,7 @@ export function ReferenceSection() {
   const tdDesc =
     'border-b border-border px-2.5 py-2 align-top leading-[1.45] text-foreground-secondary min-w-48';
   const reactOnly = (
-    <span className='ml-1.5 rounded bg-surface-badge px-1.5 py-0.5 font-sans text-[0.5625rem] font-medium tracking-wide text-badge-foreground'>
+    <span className='ml-1.5 select-none rounded bg-surface-badge px-1.5 py-0.5 font-sans text-[0.5625rem] font-medium tracking-wide text-badge-foreground'>
       REACT
     </span>
   );
@@ -873,8 +886,16 @@ export function ReferenceSection() {
 
 export function PageFooter() {
   return (
-    <footer className='mx-auto max-w-152 border-t border-border px-6 py-6 text-xs text-foreground-tertiary'>
-      Kodama - Deterministic animated avatars.
+    <footer className='mx-auto flex max-w-152 items-center justify-between border-t border-border px-6 py-3 text-xs text-foreground-tertiary'>
+      <span>Kodama — deterministic, animated, open-source avatars.</span>
+      <Link
+        href='https://github.com/chroxify/kodama'
+        target='_blank'
+        rel='noopener noreferrer'
+        title='GitHub'
+      >
+        <IconGitHub className='h-3.5 w-3.5 text-foreground-quaternary transition-colors hover:text-foreground-tertiary' />
+      </Link>
     </footer>
   );
 }

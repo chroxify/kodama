@@ -5,15 +5,16 @@
   --foreground: #111111;
 
   --foreground-secondary: rgba(0, 0, 0, 0.65);
-  --foreground-tertiary: rgba(0, 0, 0, 0.40);
+  --foreground-tertiary: rgba(0, 0, 0, 0.4);
   --foreground-quaternary: rgba(0, 0, 0, 0.25);
-  --foreground-muted: rgba(0, 0, 0, 0.20);
+  --foreground-muted: rgba(0, 0, 0, 0.2);
 
   --heading: rgba(0, 0, 0, 0.85);
-  --heading-secondary: rgba(0, 0, 0, 0.80);
-  --heading-tertiary: rgba(0, 0, 0, 0.60);
+  --heading-secondary: rgba(0, 0, 0, 0.8);
+  --heading-tertiary: rgba(0, 0, 0, 0.6);
 
   --code-foreground: rgba(0, 0, 0, 0.75);
+  --code-inline-background: #f2f2ed;
   --code-background: #f5f4f1;
   --code-block-foreground: #444444;
 
@@ -22,7 +23,7 @@
   --code-tag: #d97706;
   --code-attr-name: #2563eb;
   --code-attr-value: #16a34a;
-  --code-comment: rgba(0, 0, 0, 0.30);
+  --code-comment: rgba(0, 0, 0, 0.3);
   --code-punctuation: rgba(0, 0, 0, 0.25);
   --code-url-path: #d97706;
   --code-url-param-key: #2563eb;
@@ -36,7 +37,7 @@
   --surface-placeholder: rgba(0, 0, 0, 0.04);
 
   --border: rgba(0, 0, 0, 0.08);
-  --border-input: rgba(0, 0, 0, 0.10);
+  --border-input: rgba(0, 0, 0, 0.1);
   --border-strong: rgba(0, 0, 0, 0.12);
 
   --badge-foreground: rgba(0, 0, 0, 0.35);
@@ -62,6 +63,7 @@
 
   --color-code-foreground: var(--code-foreground);
   --color-code-background: var(--code-background);
+  --color-code-inline-background: var(--code-inline-background);
   --color-code-block-foreground: var(--code-block-foreground);
 
   --color-accent: var(--accent);

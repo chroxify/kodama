@@ -28,7 +28,7 @@ export default function Home() {
         [&_p]:text-[0.875rem] [&_p]:font-[450] [&_p]:leading-6 [&_p]:tracking-[-0.005em] [&_p]:text-foreground-secondary
         [&_p+p]:mt-3
         [&_p_strong]:font-semibold [&_p_strong]:text-heading
-        [&_code]:rounded [&_code]:bg-code-background [&_code]:px-[0.35rem] [&_code]:py-[0.1rem]
+        [&_code]:rounded [&_code]:bg-code-inline-background [&_code]:px-[0.35rem] [&_code]:py-[0.1rem]
         [&_code]:font-mono [&_code]:text-[0.8125rem] [&_code]:text-code-foreground
         [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit [&_pre_code]:text-xs'
       >
