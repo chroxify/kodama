@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/next';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist_Mono, Instrument_Serif } from 'next/font/google';
 import localFont from 'next/font/local';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -29,6 +29,12 @@ const instrumentSerif = Instrument_Serif({
 const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : 'http://localhost:3000';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   title: 'Kodama — Animated avatar system for developers',
