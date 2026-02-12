@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
+    "@vercel/analytics": "^1.6.1",
     "kodama-id": "workspace:*",
     "next": "16.1.6",
     "nuqs": "^2.8.8",

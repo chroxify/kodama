@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { Geist_Mono, Instrument_Serif } from 'next/font/google';
 import localFont from 'next/font/local';
@@ -61,6 +62,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${openRunde.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}>
+        <Analytics />
         <NuqsAdapter>{children}</NuqsAdapter>
       </body>
     </html>
