@@ -1,16 +1,57 @@
 {
   "name": "kodama-id",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
   "type": "module",
+  "description": "Animated avatar system for developers. Generate unique, fully animated characters from any string.",
+  "author": "Christo Todorov <chroxify@gmail.com>",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chroxify/kodama.git",
+    "directory": "packages/kodama"
+  },
+  "homepage": "https://kodama.sh",
+  "keywords": [
+    "avatar",
+    "generative",
+    "animated",
+    "deterministic",
+    "svg",
+    "react",
+    "identicon",
+    "dicebear"
+  ],
+  "sideEffects": false,
   "exports": {
     ".": "./src/core/index.ts",
     "./react": "./src/react/index.ts",
     "./variants": "./src/variants/index.ts"
   },
   "types": "./src/core/index.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
+      },
+      "./react": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "./variants": {
+        "types": "./dist/variants/index.d.ts",
+        "default": "./dist/variants/index.js"
+      }
+    },
+    "types": "./dist/core/index.d.ts"
+  },
   "scripts": {
-    "check-types": "tsc -p tsconfig.json --noEmit"
+    "build": "tsc -p tsconfig.build.json",
+    "check-types": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "bun run build"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
