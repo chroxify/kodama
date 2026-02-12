@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { PageContent } from './page-content';
 
 type Props = {
@@ -39,5 +40,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default function Home() {
-  return <PageContent />;
+  return (
+    <Suspense>
+      <PageContent />
+    </Suspense>
+  );
 }
