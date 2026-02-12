@@ -3,12 +3,83 @@
 :root {
   --background: #faf9f7;
   --foreground: #111111;
+
+  --foreground-secondary: rgba(0, 0, 0, 0.65);
+  --foreground-tertiary: rgba(0, 0, 0, 0.40);
+  --foreground-quaternary: rgba(0, 0, 0, 0.25);
+  --foreground-muted: rgba(0, 0, 0, 0.20);
+
+  --heading: rgba(0, 0, 0, 0.85);
+  --heading-secondary: rgba(0, 0, 0, 0.80);
+  --heading-tertiary: rgba(0, 0, 0, 0.60);
+
+  --code-foreground: rgba(0, 0, 0, 0.75);
+  --code-background: #f5f4f1;
+  --code-block-foreground: #444444;
+
+  --code-keyword: #8b5cf6;
+  --code-string: #16a34a;
+  --code-tag: #d97706;
+  --code-attr-name: #2563eb;
+  --code-attr-value: #16a34a;
+  --code-comment: rgba(0, 0, 0, 0.30);
+  --code-punctuation: rgba(0, 0, 0, 0.25);
+  --code-url-path: #d97706;
+  --code-url-param-key: #2563eb;
+  --code-url-param-value: #16a34a;
+
+  --accent: #4c74ff;
+
+  --surface: rgba(0, 0, 0, 0.02);
+  --surface-raised: #ffffff;
+  --surface-badge: rgba(0, 0, 0, 0.05);
+  --surface-placeholder: rgba(0, 0, 0, 0.04);
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-input: rgba(0, 0, 0, 0.10);
+  --border-strong: rgba(0, 0, 0, 0.12);
+
+  --badge-foreground: rgba(0, 0, 0, 0.35);
+
+  --selection-background: #e8e8e8;
+  --selection-foreground: #111111;
+
+  --divider: rgba(0, 0, 0, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-tertiary: var(--foreground-tertiary);
+  --color-foreground-quaternary: var(--foreground-quaternary);
+  --color-foreground-muted: var(--foreground-muted);
+
+  --color-heading: var(--heading);
+  --color-heading-secondary: var(--heading-secondary);
+  --color-heading-tertiary: var(--heading-tertiary);
+
+  --color-code-foreground: var(--code-foreground);
+  --color-code-background: var(--code-background);
+  --color-code-block-foreground: var(--code-block-foreground);
+
+  --color-accent: var(--accent);
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-badge: var(--surface-badge);
+  --color-surface-placeholder: var(--surface-placeholder);
+
+  --color-border: var(--border);
+  --color-border-input: var(--border-input);
+  --color-border-strong: var(--border-strong);
+
+  --color-badge-foreground: var(--badge-foreground);
+
+  --color-divider: var(--divider);
+
+  --font-sans: var(--font-open-runde);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -16,9 +87,35 @@
   box-sizing: border-box;
 }
 
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 300px;
+  border: 4px solid transparent;
+  background: rgba(0, 0, 0, 0.15) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25) padding-box;
+}
+
 ::selection {
-  color: #111111;
-  background: #e8e8e8;
+  color: var(--selection-foreground);
+  background: var(--selection-background);
 }
 
 html {
@@ -33,7 +130,7 @@ body {
   overflow-y: scroll;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-open-runde), system-ui, -apple-system, sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

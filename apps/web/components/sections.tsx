@@ -1,46 +1,249 @@
 import { Kodama } from 'kodama-id/react';
 import { faces } from 'kodama-id/variants';
+import { useCallback, useRef, useState } from 'react';
 import { GRADIENTS, HERO_NAMES, MOODS, VARIETY_NAMES } from '../lib/constants';
-import { CodeBlock, CopyIcon, Section } from './shared';
+import { IconCheck, IconCopy, IconShuffle } from '../lib/icons';
+import { CodeBlock, ScrollFade, Section } from './shared';
+
+const PACKAGE_MANAGERS = [
+  { value: 'bun', command: 'bun install' },
+  { value: 'npm', command: 'npm install' },
+  { value: 'pnpm', command: 'pnpm add' },
+  { value: 'yarn', command: 'yarn add' },
+] as const;
+
+function InstallBanner() {
+  const [pm, setPm] = useState<(typeof PACKAGE_MANAGERS)[number]['value']>('bun');
+  const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const command = PACKAGE_MANAGERS.find((p) => p.value === pm)!;
+  const fullCommand = `${command.command} kodama-id`;
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard?.writeText(fullCommand);
+    setCopied(true);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setCopied(false), 2500);
+  }, [fullCommand]);
+
+  return (
+    <button
+      type='button'
+      onClick={handleCopy}
+      className='mb-1 inline-flex w-fit cursor-copy items-center gap-2 bg-transparent p-0 font-mono text-[0.6875rem] text-foreground-tertiary transition-colors hover:text-foreground-secondary'
+      title='Copy to clipboard'
+    >
+      <code className='bg-transparent p-0 text-inherit'>
+        <select
+          value={pm}
+          onChange={(e) => {
+            e.stopPropagation();
+            setPm(e.target.value as typeof pm);
+          }}
+          onClick={(e) => e.stopPropagation()}
+          className='cursor-pointer appearance-none border-none bg-transparent font-[inherit] text-[length:inherit] text-inherit underline decoration-dashed decoration-foreground-quaternary underline-offset-2 outline-none'
+          style={{ width: `${pm.length}ch` }}
+        >
+          {PACKAGE_MANAGERS.map((p) => (
+            <option key={p.value} value={p.value}>
+              {p.value}
+            </option>
+          ))}
+        </select>{' '}
+        {command.command.split(' ').slice(1).join(' ')} kodama-id
+      </code>
+      <span className='relative inline-flex h-3.5 w-3.5'>
+        <span
+          className='inline-flex h-3.5 w-3.5 transition-all duration-200 ease-in-out'
+          style={{
+            opacity: copied ? 0 : 0.7,
+            transform: copied ? 'scale(0.75)' : 'scale(1)',
+          }}
+          dangerouslySetInnerHTML={{ __html: IconCopy }}
+        />
+        <span
+          className='absolute inset-0 inline-flex h-3.5 w-3.5 items-center justify-center transition-all duration-200 ease-in-out'
+          style={{
+            opacity: copied ? 0.7 : 0,
+            transform: copied ? 'scale(1)' : 'scale(0.75)',
+          }}
+          dangerouslySetInnerHTML={{ __html: IconCheck }}
+        />
+      </span>
+    </button>
+  );
+}
 
 export function HeroSection() {
   return (
-    <header className='relative mb-2 flex flex-col gap-2 pb-4'>
-      <div className='mb-3 flex items-center gap-2'>
-        <Kodama name='kodama' size={28} detailLevel='full' animations={['blink']} />
-        <span className='text-[0.9375rem] font-medium tracking-[-0.01em] text-black/85'>kodama</span>
+    <header className='relative flex flex-col gap-2'>
+      <div className='flex items-center gap-2'>
+        <span className='inline-flex items-center gap-1.5 text-[0.9375rem] font-medium tracking-[-0.01em] text-heading'>
+          Kodama <span className='text-[0.8125rem] text-foreground-tertiary'>木魅</span>
+        </span>
       </div>
 
-      <button
-        type='button'
-        className='mb-1 inline-flex w-fit cursor-pointer items-center gap-2 bg-transparent p-0 font-mono text-[0.6875rem] text-black/40 transition-colors hover:text-black/65'
-        onClick={() => navigator.clipboard?.writeText('bun install kodama-id')}
-        title='Copy to clipboard'
-      >
-        <code className='bg-transparent p-0 text-inherit'>bun install kodama-id</code>
-        <span className='opacity-70'>
-          <CopyIcon />
-        </span>
-      </button>
+      <InstallBanner />
 
-      <h1 className='[font-family:var(--font-serif),Georgia,serif] text-[2rem] leading-[1.2] font-normal tracking-[-0.02em] text-black/85'>
-        Same name, same face.
+      <h1 className='[font-family:var(--font-serif),Georgia,serif] text-[2rem] leading-[1.2] font-normal tracking-[-0.02em] text-heading'>
+        Tiny spirits, born from strings.
         <br />
-        Every time.
+        Always alive.
       </h1>
 
       <p className='text-[0.9375rem] leading-[1.55]'>
-        Kodama generates unique, animated character faces from any string - a name, email, or user ID. Same
-        input, same face, deterministically. <strong>145,152</strong> possible combinations across 16 pastel
-        gradients, 6 eye styles, 7 mouths, 4 eyebrows, and 3 accessories.
+        Kodama (/koˈdama/) generates unique, animated character avatars from any string. Same input, same
+        avatar, single time. <strong>145,152</strong> possible combinations across 16 pastel gradients, 6 eye
+        styles, 7 mouths, 4 eyebrows, and 3 accessories.
       </p>
 
       <div className='mt-6 flex flex-wrap items-center gap-2.5'>
-        {HERO_NAMES.map((name) => (
-          <Kodama key={name} name={name} size={56} animations={['blink']} detailLevel='full' />
+        {HERO_NAMES.map((name, i) => (
+          <Kodama
+            key={name}
+            name={name}
+            size={56}
+            animations={[(['blink', 'eyebrowBounce', 'glance', 'eyeWander'] as const)[i % 4]]}
+            detailLevel='full'
+          />
         ))}
       </div>
     </header>
+  );
+}
+
+type FacesAnimation = 'blink' | 'float' | 'entrance' | 'sway' | 'eyeWander' | 'eyebrowBounce' | 'glance';
+
+const ANIMATION_OPTIONS: FacesAnimation[] = [
+  'blink',
+  'float',
+  'sway',
+  'eyeWander',
+  'eyebrowBounce',
+  'glance',
+  'entrance',
+];
+const SHAPE_OPTIONS = ['circle', 'squircle', 'square'] as const;
+const DEPTH_OPTIONS = ['none', 'subtle', 'medium', 'dramatic'] as const;
+const DETAIL_OPTIONS = ['minimal', 'basic', 'standard', 'full'] as const;
+const MOOD_OPTIONS = ['none', 'happy', 'surprised', 'sleepy', 'cool', 'cheeky'] as const;
+const BACKGROUND_OPTIONS = ['gradient', 'solid'] as const;
+
+const RANDOM_NAMES = [
+  'sakura',
+  'atlas',
+  'luna',
+  'phoenix',
+  'sage',
+  'coral',
+  'indigo',
+  'wren',
+  'alice',
+  'bob',
+  'charlie',
+  'diana',
+  'eve',
+  'hiro',
+  'ivy',
+  'kira',
+  'leo',
+  'mia',
+  'noah',
+  'olivia',
+  'quinn',
+  'ruby',
+  'sam',
+  'vera',
+  'octavia',
+  'lexa',
+  'lincoln',
+  'murphy',
+  'madi',
+  'ashe',
+  'diyoza',
+  'indra',
+  'helios',
+  'roan',
+];
+
+function pickRandom<T>(arr: readonly T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]!;
+}
+
+function pickRandomAnimations(): FacesAnimation[] {
+  const count = Math.floor(Math.random() * 3) + 1;
+  const shuffled = [...ANIMATION_OPTIONS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+function OptionRow<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: readonly T[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <li className='flex font-[450] text-[0.8125rem] leading-normal text-foreground-secondary'>
+      <strong className='w-22 shrink-0 font-[550] text-heading'>{label}</strong>
+      <span>
+        {options.map((opt, i) => (
+          <span key={opt}>
+            {i > 0 && <span className='text-foreground-quaternary cursor-default'>{' - '}</span>}
+            <button
+              type='button'
+              onClick={() => onChange(opt)}
+              className={`cursor-pointer bg-transparent p-0 font-[450] transition-colors duration-150 ${
+                value === opt ? 'text-accent' : 'text-foreground-tertiary hover:text-foreground-secondary'
+              }`}
+            >
+              {opt}
+            </button>
+          </span>
+        ))}
+      </span>
+    </li>
+  );
+}
+
+function AnimationRow({
+  value,
+  onChange,
+}: {
+  value: FacesAnimation[];
+  onChange: (v: FacesAnimation[]) => void;
+}) {
+  const toggle = (anim: FacesAnimation) => {
+    onChange(value.includes(anim) ? value.filter((a) => a !== anim) : [...value, anim]);
+  };
+
+  return (
+    <li className='flex font-[450] text-[0.8125rem] leading-normal text-foreground-secondary'>
+      <strong className='w-22 shrink-0 font-[550] text-heading'>Animations</strong>
+      <span>
+        {ANIMATION_OPTIONS.map((anim, i) => (
+          <span key={anim}>
+            {i > 0 && <span className='text-foreground-quaternary'>{' - '}</span>}
+            <button
+              type='button'
+              onClick={() => toggle(anim)}
+              className={`cursor-pointer bg-transparent p-0 font-[450] transition-colors duration-150 ${
+                value.includes(anim)
+                  ? 'text-accent'
+                  : 'text-foreground-tertiary hover:text-foreground-secondary'
+              }`}
+            >
+              {anim}
+            </button>
+          </span>
+        ))}
+      </span>
+    </li>
   );
 }
 
@@ -51,26 +254,129 @@ export function QuickStartSection({
   tryName: string;
   setTryName: (name: string) => void;
 }) {
+  const [shape, setShape] = useState<(typeof SHAPE_OPTIONS)[number]>('circle');
+  const [depth, setDepth] = useState<(typeof DEPTH_OPTIONS)[number]>('dramatic');
+  const [detailLevel, setDetailLevel] = useState<(typeof DETAIL_OPTIONS)[number]>('full');
+  const [mood, setMood] = useState<(typeof MOOD_OPTIONS)[number]>('none');
+  const [background, setBackground] = useState<(typeof BACKGROUND_OPTIONS)[number]>('gradient');
+  const [animations, setAnimations] = useState<FacesAnimation[]>(['blink']);
+  const [spinning, setSpinning] = useState(false);
+
+  const displayName = tryName || 'kodama';
+
+  const apiParams: string[] = [];
+  if (shape !== 'circle') apiParams.push(`shape=${shape}`);
+  if (depth !== 'dramatic') apiParams.push(`depth=${depth}`);
+  if (detailLevel !== 'full') apiParams.push(`detailLevel=${detailLevel}`);
+  if (mood !== 'none') apiParams.push(`mood=${mood}`);
+  if (background !== 'gradient') apiParams.push(`background=${background}`);
+  if (animations.length > 0) apiParams.push(`animations=${animations.join(',')}`);
+  const apiQuery = apiParams.length > 0 ? `?${apiParams.join('&')}` : '';
+
+  const sdkProps: string[] = [`name="${displayName}"`];
+  sdkProps.push('size={48}');
+  if (shape !== 'circle') sdkProps.push(`shape="${shape}"`);
+  if (depth !== 'dramatic') sdkProps.push(`depth="${depth}"`);
+  if (detailLevel !== 'full') sdkProps.push(`detailLevel="${detailLevel}"`);
+  if (mood !== 'none') sdkProps.push(`mood="${mood}"`);
+  if (background !== 'gradient') sdkProps.push(`background="${background}"`);
+  if (animations.length > 0) {
+    const animStr =
+      animations.length === 1
+        ? `animations={["${animations[0]}"]}`
+        : `animations={[${animations.map((a) => `"${a}"`).join(', ')}]}`;
+    sdkProps.push(animStr);
+  }
+  const sdkPropsStr = sdkProps.join('\n  ');
+
   return (
     <Section title='Quick Start'>
       <p>
-        Import the <code>Kodama</code> component and pass a <code>name</code> string. The avatar is
-        deterministically generated from the input.
+        Try it out — enter a name, adjust the options, and watch the avatar update live.
+        <br /> Drop it into your project with the API or React component.
+      </p>
+
+      <div className='mt-3 flex items-start gap-5'>
+        <ul className='flex min-w-0 flex-1 list-none flex-col gap-1 pl-0'>
+          <li className='flex font-[450] text-[0.8125rem] leading-normal text-foreground-secondary'>
+            <strong className='w-22 shrink-0 font-[550] text-heading'>Name</strong>
+            <input
+              type='text'
+              value={tryName}
+              onChange={(event) => setTryName(event.target.value)}
+              placeholder='type anything...'
+              className='border-none bg-transparent py-0 font-[450] text-[0.8125rem] text-accent outline-none placeholder:text-foreground-quaternary'
+            />
+          </li>
+          <OptionRow
+            label='Background'
+            value={background}
+            options={BACKGROUND_OPTIONS}
+            onChange={setBackground}
+          />
+          <OptionRow label='Shape' value={shape} options={SHAPE_OPTIONS} onChange={setShape} />
+          <OptionRow label='Depth' value={depth} options={DEPTH_OPTIONS} onChange={setDepth} />
+          <OptionRow label='Detail' value={detailLevel} options={DETAIL_OPTIONS} onChange={setDetailLevel} />
+          <OptionRow label='Mood' value={mood} options={MOOD_OPTIONS} onChange={setMood} />
+          <AnimationRow value={animations} onChange={setAnimations} />
+        </ul>
+
+        <div className='flex flex-col items-center gap-2'>
+          <Kodama
+            name={tryName || ' '}
+            size={64}
+            shape={shape}
+            depth={depth}
+            detailLevel={detailLevel}
+            mood={mood === 'none' ? undefined : mood}
+            background={background}
+            animations={animations}
+          />
+          <button
+            type='button'
+            onClick={() => {
+              setTryName(pickRandom(RANDOM_NAMES));
+              setShape(pickRandom(SHAPE_OPTIONS));
+              setDepth(pickRandom(DEPTH_OPTIONS));
+              setDetailLevel(pickRandom(DETAIL_OPTIONS));
+              setMood(pickRandom(MOOD_OPTIONS));
+              setBackground(pickRandom(BACKGROUND_OPTIONS));
+              setAnimations(pickRandomAnimations());
+              setSpinning(true);
+              setTimeout(() => setSpinning(false), 400);
+            }}
+            className='cursor-pointer bg-transparent p-0 text-foreground-tertiary transition-colors hover:text-foreground-secondary'
+            title='Randomize'
+          >
+            <span
+              className='inline-flex h-3.5 w-3.5'
+              style={{
+                transform: spinning ? 'rotate(180deg) scale(0.95)' : 'rotate(0deg) scale(1)',
+                transition: spinning ? 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
+              }}
+              dangerouslySetInnerHTML={{ __html: IconShuffle }}
+            />
+          </button>
+        </div>
+      </div>
+
+      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>API</h4>
+      <p>
+        Generate avatars as SVG over HTTP. The <code>name</code> is the URL path — all options go in the query
+        string.
+      </p>
+      <CodeBlock>{`<img src="https://api.kodama.sh/${displayName}${apiQuery}" />`}</CodeBlock>
+
+      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>React</h4>
+      <p>
+        Import the <code>Kodama</code> component and pass a <code>name</code> string. Props match the API
+        parameters.
       </p>
       <CodeBlock>{`import { Kodama } from "kodama-id/react";
 
-<Kodama name="sakura@example.com" size={48} />`}</CodeBlock>
-
-      <div className='mt-3.5 flex items-center gap-4 rounded-lg border border-black/8 bg-black/2 p-4 max-[600px]:flex-col'>
-        <input
-          type='text'
-          value={tryName}
-          onChange={(event) => setTryName(event.target.value)}
-          placeholder='Type any string...'
-          className='flex-1 rounded-md border border-black/10 bg-white px-3 py-2 text-[0.875rem] text-black/85 outline-none transition-colors placeholder:text-black/25 focus:border-[#4c74ff]'
-        />
-        <Kodama name={tryName || ' '} size={64} detailLevel='full' animations={['blink']} />
-      </div>
+<Kodama
+  ${sdkPropsStr}
+/>`}</CodeBlock>
     </Section>
   );
 }
@@ -79,8 +385,8 @@ export function DeterministicSection() {
   return (
     <Section title='Deterministic'>
       <p>
-        Avatars are computed from a hash of the input string. No randomness, no server, no storage. The same
-        name always produces an identical face.
+        Avatars are derived from a hash of the input string — the same name always produces the same face.
+        Fully deterministic, with nothing stored or fetched.
       </p>
 
       <div className='mt-3 flex flex-wrap gap-10'>
@@ -90,7 +396,7 @@ export function DeterministicSection() {
             <Kodama name='alice' size={44} detailLevel='full' />
             <Kodama name='alice' size={44} detailLevel='full' />
           </div>
-          <span className='text-[0.6875rem] font-[450] text-black/40'>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>
             &quot;alice&quot; - always identical
           </span>
         </div>
@@ -101,7 +407,9 @@ export function DeterministicSection() {
             <Kodama name='bob' size={44} detailLevel='full' />
             <Kodama name='charlie' size={44} detailLevel='full' />
           </div>
-          <span className='text-[0.6875rem] font-[450] text-black/40'>Different names, different faces</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>
+            Different names, different faces
+          </span>
         </div>
       </div>
     </Section>
@@ -118,29 +426,29 @@ export function CombinationsSection() {
       </p>
 
       <ul className='mt-2 flex list-none flex-col gap-1 pl-0'>
-        <li className='text-[0.8125rem] leading-normal text-black/65'>
-          <strong className='inline-block min-w-22 font-[550] text-black/85'>Eyes</strong>
-          <span className='text-black/40'>round - cross - line - curved - wink - heart</span>
+        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='inline-block min-w-22 font-[550] text-heading'>Eyes</strong>
+          <span className='text-foreground-tertiary'>round - cross - line - curved - wink - heart</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-black/65'>
-          <strong className='inline-block min-w-22 font-[550] text-black/85'>Mouths</strong>
-          <span className='text-black/40'>smile - grin - o - cat - tongue - smirk - flat</span>
+        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='inline-block min-w-22 font-[550] text-heading'>Mouths</strong>
+          <span className='text-foreground-tertiary'>smile - grin - o - cat - tongue - smirk - flat</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-black/65'>
-          <strong className='inline-block min-w-22 font-[550] text-black/85'>Eyebrows</strong>
-          <span className='text-black/40'>arched - flat - raised - none</span>
+        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='inline-block min-w-22 font-[550] text-heading'>Eyebrows</strong>
+          <span className='text-foreground-tertiary'>arched - flat - raised - none</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-black/65'>
-          <strong className='inline-block min-w-22 font-[550] text-black/85'>Cheeks</strong>
-          <span className='text-black/40'>blush - none</span>
+        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='inline-block min-w-22 font-[550] text-heading'>Cheeks</strong>
+          <span className='text-foreground-tertiary'>blush - none</span>
         </li>
-        <li className='text-[0.8125rem] leading-normal text-black/65'>
-          <strong className='inline-block min-w-22 font-[550] text-black/85'>Accessories</strong>
-          <span className='text-black/40'>glasses - sunglasses - none</span>
+        <li className='text-[0.8125rem] leading-normal text-foreground-secondary'>
+          <strong className='inline-block min-w-22 font-[550] text-heading'>Accessories</strong>
+          <span className='text-foreground-tertiary'>glasses - sunglasses - none</span>
         </li>
       </ul>
 
-      <div className='mt-3 flex flex-wrap gap-2'>
+      <div className='mt-5 flex flex-wrap gap-2'>
         {VARIETY_NAMES.map((name) => (
           <Kodama key={name} name={name} size={44} detailLevel='full' />
         ))}
@@ -153,14 +461,14 @@ export function ColorsSection() {
   return (
     <Section title='Colors'>
       <p>
-        Sixteen Apple-inspired pastel gradients with radial gradient rendering for a subtle 3D appearance.
-        Pass a custom <code>gradients</code> array to use your own palette.
+        Sixteen soft pastel gradients with radial rendering for a subtle 3D appearance. <br /> Pass in a
+        custom <code>gradients</code> array to use your own palette.
       </p>
-      <div className='mt-3 grid grid-cols-4 gap-4 max-[600px]:grid-cols-2'>
+      <div className='mt-5 grid grid-cols-4 gap-4 max-[600px]:grid-cols-2'>
         {GRADIENTS.map(({ name, pair }) => (
           <div key={name} className='flex flex-col items-center gap-1.5'>
             <Kodama name={name} size={52} gradients={pair} detailLevel='full' />
-            <span className='text-[0.6875rem] font-[450] text-black/40'>{name}</span>
+            <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>{name}</span>
           </div>
         ))}
       </div>
@@ -184,19 +492,19 @@ export function VariantsSection() {
 // Or pre-configure with a descriptor
 <Kodama name="luna" variant={faces({ background: "solid", detailLevel: "full" })} />`}</CodeBlock>
 
-      <div className='mt-3 flex flex-wrap items-center gap-4'>
+      <div className='mt-5 flex flex-wrap items-center gap-4'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='faces' size={56} variant={faces} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>Faces</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>Faces</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <div
-            className='flex items-center justify-center rounded-full bg-black/[0.04]'
+            className='flex items-center justify-center rounded-full bg-surface-placeholder'
             style={{ width: 56, height: 56 }}
           >
-            <span className='select-none text-base text-black/20'>?</span>
+            <span className='select-none text-base text-foreground-muted'>?</span>
           </div>
-          <span className='text-[0.6875rem] font-[450] text-black/40'>Create your own</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>More soon...</span>
         </div>
       </div>
     </Section>
@@ -206,17 +514,19 @@ export function VariantsSection() {
 export function MoodsSection() {
   return (
     <Section title='Moods'>
-      <p>Five preset moods override the generated facial features to express specific emotions.</p>
+      <p>Set a mood to give the avatar a specific expression, regardless of the generated features.</p>
 
       <CodeBlock>{`<Kodama name="user" mood="happy" />
 <Kodama name="user" mood="cool" />`}</CodeBlock>
 
-      <div className='mt-3 grid grid-cols-5 gap-3 max-[600px]:grid-cols-3'>
+      <div className='mt-5 grid grid-cols-5 gap-3 max-[600px]:grid-cols-3'>
         {MOODS.map(({ mood, label, desc }) => (
           <div key={mood} className='flex flex-col items-center gap-1.5 text-center'>
             <Kodama name='mood-demo' size={52} mood={mood} detailLevel='full' />
-            <span className='text-xs font-medium text-black/85'>{label}</span>
-            <span className='text-[0.625rem] leading-[1.4] text-black/40'>{desc}</span>
+            <div className='flex flex-col items-center gap-0.5'>
+              <span className='text-xs font-medium text-heading'>{label}</span>
+              <span className='text-[0.625rem] leading-[1.4] text-foreground-tertiary'>{desc}</span>
+            </div>
           </div>
         ))}
       </div>
@@ -229,42 +539,52 @@ export function AnimationsSection() {
     <Section title='Animations'>
       <p>
         Pass an <code>animations</code> array to bring avatars to life. All animations are CSS-based and
-        injected on demand - combine freely.
+        injected on demand — combine freely. Pass a string for defaults, or an object with <code>type</code>,{' '}
+        <code>delay</code>, and <code>duration</code> for custom timing.
       </p>
 
       <CodeBlock>{`<Kodama
   name="sprite"
   animations={["blink", "float", "sway", "eyeWander"]}
+/>
+
+// With custom timing
+<Kodama
+  name="sprite"
+  animations={[
+    "blink",
+    { type: "float", duration: 4, delay: 0.5 },
+  ]}
 />`}</CodeBlock>
 
-      <div className='mt-3 grid grid-cols-4 gap-3 max-[600px]:grid-cols-3'>
+      <div className='mt-5 grid grid-cols-4 gap-3 max-[600px]:grid-cols-3'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='blink-demo' size={48} animations={['blink']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>blink</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>blink</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='float-demo' size={48} animations={['float']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>float</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>float</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='breeze' size={48} animations={['sway']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>sway</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>sway</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='gaze' size={48} animations={['eyeWander']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>eyeWander</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>eyeWander</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='bounce-demo' size={48} animations={['eyebrowBounce']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>eyebrowBounce</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>eyebrowBounce</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='glance-demo' size={48} animations={['glance']} detailLevel='full' depth='dramatic' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>glance</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>glance</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='entrance-demo' size={48} animations={['entrance']} detailLevel='full' />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>entrance</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>entrance</span>
         </div>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama
@@ -273,7 +593,7 @@ export function AnimationsSection() {
             animations={['blink', 'float', 'sway', 'eyeWander', 'eyebrowBounce']}
             detailLevel='full'
           />
-          <span className='text-[0.6875rem] font-[450] text-black/40'>combined</span>
+          <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>combined</span>
         </div>
       </div>
     </Section>
@@ -283,20 +603,17 @@ export function AnimationsSection() {
 export function ShapeSection() {
   return (
     <Section title='Shape'>
-      <p>
-        Control the avatar shape with the <code>shape</code> prop. Applies to both the React component and SVG
-        output.
-      </p>
+      <p>Choose between a circle, squircle, or square clip for the avatar.</p>
 
       <CodeBlock>{`<Kodama name="user" shape="circle" />
 <Kodama name="user" shape="squircle" />
 <Kodama name="user" shape="square" />`}</CodeBlock>
 
-      <div className='mt-3 flex flex-wrap items-center gap-4'>
+      <div className='mt-5 flex flex-wrap items-center gap-4'>
         {(['circle', 'squircle', 'square'] as const).map((s) => (
           <div key={s} className='flex flex-col items-center gap-1.5'>
             <Kodama name='shape-demo' size={56} shape={s} detailLevel='full' animations={['blink']} />
-            <span className='text-[0.6875rem] font-[450] text-black/40'>{s}</span>
+            <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>{s}</span>
           </div>
         ))}
       </div>
@@ -314,11 +631,11 @@ export function DepthEffectsSection() {
 
       <CodeBlock>{`<Kodama name="user" depth="dramatic" />`}</CodeBlock>
 
-      <div className='mt-3 flex flex-wrap items-center gap-4'>
+      <div className='mt-5 flex flex-wrap items-center gap-4'>
         {(['none', 'subtle', 'medium', 'dramatic'] as const).map((level) => (
           <div key={level} className='flex flex-col items-center gap-1.5'>
             <Kodama name='depth' size={56} depth={level} detailLevel='full' />
-            <span className='text-[0.6875rem] font-[450] text-black/40'>{level}</span>
+            <span className='text-[0.6875rem] font-[450] text-foreground-tertiary'>{level}</span>
           </div>
         ))}
       </div>
@@ -334,36 +651,42 @@ export function DetailLevelsSection() {
         Override with the <code>detailLevel</code> prop.
       </p>
 
-      <div className='mt-3 flex flex-wrap items-end gap-6'>
+      <div className='mt-5 flex flex-wrap items-end gap-6'>
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='detail' size={24} />
-          <div>
-            <span className='text-[0.6875rem] font-[450] text-black/40'>minimal</span>
-            <span className='mt-0.5 block text-[0.625rem] text-black/25'>&lt; 32px - eyes only</span>
+          <div className='flex flex-col items-center gap-0.5'>
+            <span className='text-xs font-medium text-heading'>minimal</span>
+            <span className='text-[0.625rem] leading-[1.4] text-foreground-tertiary'>
+              &lt; 32px - eyes only
+            </span>
           </div>
         </div>
 
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='detail' size={40} />
-          <div>
-            <span className='text-[0.6875rem] font-[450] text-black/40'>basic</span>
-            <span className='mt-0.5 block text-[0.625rem] text-black/25'>32-48px - + mouth</span>
+          <div className='flex flex-col items-center gap-0.5'>
+            <span className='text-xs font-medium text-heading'>basic</span>
+            <span className='text-[0.625rem] leading-[1.4] text-foreground-tertiary'>32-48px - + mouth</span>
           </div>
         </div>
 
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='detail' size={56} />
-          <div>
-            <span className='text-[0.6875rem] font-[450] text-black/40'>standard</span>
-            <span className='mt-0.5 block text-[0.625rem] text-black/25'>48-64px - + eyebrows</span>
+          <div className='flex flex-col items-center gap-0.5'>
+            <span className='text-xs font-medium text-heading'>standard</span>
+            <span className='text-[0.625rem] leading-[1.4] text-foreground-tertiary'>
+              48-64px - + eyebrows
+            </span>
           </div>
         </div>
 
         <div className='flex flex-col items-center gap-1.5'>
           <Kodama name='detail' size={72} />
-          <div>
-            <span className='text-[0.6875rem] font-[450] text-black/40'>full</span>
-            <span className='mt-0.5 block text-[0.625rem] text-black/25'>&gt;= 64px - all features</span>
+          <div className='flex flex-col items-center gap-0.5'>
+            <span className='text-xs font-medium text-heading'>full</span>
+            <span className='text-[0.625rem] leading-[1.4] text-foreground-tertiary'>
+              &gt;= 64px - all features
+            </span>
           </div>
         </div>
       </div>
@@ -375,7 +698,8 @@ export function CustomGradientsSection() {
   return (
     <Section title='Custom Gradients'>
       <p>
-        Replace the default palette with your own gradient pairs via the <code>gradients</code> prop.
+        Replace the default palette with your own gradient pairs via the <code>gradients</code> prop. The API
+        accepts hex pairs like <code>E8D5F5-C7A4E0,FFE0D0-FFB899</code>.
       </p>
 
       <CodeBlock>{`const brand = [
@@ -385,7 +709,7 @@ export function CustomGradientsSection() {
 
 <Kodama name="user" gradients={brand} />`}</CodeBlock>
 
-      <div className='mt-3 flex flex-wrap items-center gap-4'>
+      <div className='mt-5 flex flex-wrap items-center gap-4'>
         <Kodama
           name='custom-1'
           size={52}
@@ -415,45 +739,19 @@ export function CustomGradientsSection() {
   );
 }
 
-export function ApiSection() {
-  return (
-    <Section title='API'>
-      <p>
-        Generate avatars as SVG over HTTP. Responses are edge-cached with <strong>immutable</strong> headers
-        for instant delivery. Same name, same face — cached for a year.
-      </p>
-
-      <CodeBlock>{`GET /:name
-
-<!-- As an image -->
-<img src="https://kodama.example.com/alice" />
-
-<!-- With options -->
-<img src="https://kodama.example.com/alice?variant=faces&size=256&mood=happy&background=solid" />`}</CodeBlock>
-
-      <p>
-        All parameters match the React props by name. The avatar <code>name</code> is the URL path —
-        everything else goes in the query string.
-      </p>
-
-      <CodeBlock>{`# Full example
-/alice?variant=faces&size=256&shape=squircle&background=gradient&mood=cool&detailLevel=full&depth=dramatic&animations=blink,float`}</CodeBlock>
-    </Section>
-  );
-}
-
 export function ReferenceSection() {
   const th =
-    'border-b border-black/12 px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-black/85';
+    'border-b border-border-strong px-2.5 py-2 text-left text-[0.75rem] font-[560] whitespace-nowrap text-heading';
   const tdName =
-    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-black/85';
+    'border-b border-border px-2.5 py-2 align-top font-mono text-xs font-medium whitespace-nowrap text-heading';
   const tdType =
-    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-[#4c74ff]';
+    'border-b border-border px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-accent';
   const tdDefault =
-    'border-b border-black/8 px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-black/40';
-  const tdDesc = 'border-b border-black/8 px-2.5 py-2 align-top leading-[1.45] text-black/65';
+    'border-b border-border px-2.5 py-2 align-top font-mono text-[0.6875rem] whitespace-nowrap text-foreground-tertiary';
+  const tdDesc =
+    'border-b border-border px-2.5 py-2 align-top leading-[1.45] text-foreground-secondary min-w-48';
   const reactOnly = (
-    <span className='ml-1.5 rounded bg-black/5 px-1.5 py-0.5 font-sans text-[0.5625rem] font-medium tracking-wide text-black/35'>
+    <span className='ml-1.5 rounded bg-surface-badge px-1.5 py-0.5 font-sans text-[0.5625rem] font-medium tracking-wide text-badge-foreground'>
       REACT
     </span>
   );
@@ -476,8 +774,8 @@ export function ReferenceSection() {
         are query params.
       </p>
 
-      <h4 className='mt-4 mb-1 text-[0.75rem] font-[560] text-black/60'>Global</h4>
-      <div className='overflow-x-auto'>
+      <h4 className='mt-4 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>Global</h4>
+      <ScrollFade>
         <table className='w-full border-collapse text-[0.8125rem]'>
           {thead}
           <tbody>
@@ -503,11 +801,9 @@ export function ReferenceSection() {
             </tr>
             <tr>
               <td className={tdName}>variant</td>
-              <td className={tdType}>VariantFactory</td>
-              <td className={tdDefault}>faces</td>
-              <td className={tdDesc}>
-                Variant plugin factory, e.g. <code>faces</code>
-              </td>
+              <td className={tdType}>{'"faces"'}</td>
+              <td className={tdDefault}>{'"faces"'}</td>
+              <td className={tdDesc}>Variant plugin to use for rendering.</td>
             </tr>
             <tr>
               <td className={tdName}>interactive{reactOnly}</td>
@@ -517,10 +813,10 @@ export function ReferenceSection() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </ScrollFade>
 
-      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-black/60'>Faces variant</h4>
-      <div className='overflow-x-auto'>
+      <h4 className='mt-5 mb-1 text-[0.75rem] font-[560] text-heading-tertiary'>Faces variant</h4>
+      <ScrollFade>
         <table className='w-full border-collapse text-[0.8125rem]'>
           {thead}
           <tbody>
@@ -550,17 +846,19 @@ export function ReferenceSection() {
             </tr>
             <tr>
               <td className={tdName}>animations</td>
-              <td className={tdType}>Animation[]</td>
+              <td className={tdType}>
+                {
+                  'Animation<"blink" | "float" | "sway" | "eyeWander" | "eyebrowBounce" | "glance" | "entrance">[]'
+                }
+              </td>
               <td className={tdDefault}>[]</td>
               <td className={tdDesc}>
-                <code>blink</code> - <code>float</code> - <code>sway</code> - <code>eyeWander</code> -{' '}
-                <code>eyebrowBounce</code> - <code>glance</code> - <code>entrance</code>. API:
-                comma-separated.
+                String or <code>{'{ type, delay?, duration? }'}</code>. API: comma-separated strings.
               </td>
             </tr>
             <tr>
               <td className={tdName}>gradients</td>
-              <td className={tdType}>GradientPair[]</td>
+              <td className={tdType}>{'GradientPair<{ from: string, to: string }>[]'}</td>
               <td className={tdDefault}>-</td>
               <td className={tdDesc}>
                 Custom gradient palette. API: hex pairs like <code>E8D5F5-C7A4E0,FFE0D0-FFB899</code>
@@ -568,14 +866,14 @@ export function ReferenceSection() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </ScrollFade>
     </Section>
   );
 }
 
 export function PageFooter() {
   return (
-    <footer className='mx-auto max-w-152 border-t border-black/8 px-6 py-6 text-xs text-black/40'>
+    <footer className='mx-auto max-w-152 border-t border-border px-6 py-6 text-xs text-foreground-tertiary'>
       Kodama - Deterministic animated avatars.
     </footer>
   );
