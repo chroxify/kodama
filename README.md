@@ -4,10 +4,10 @@
   <a href="https://api.kodama.sh/Atlas?size=80&detailLevel=full&animations=eyebrowBounce"><img src="https://api.kodama.sh/Atlas?size=80&detailLevel=full&animations=eyebrowBounce" width="80" height="80" alt="Atlas" /></a>&nbsp;&nbsp;
   <a href="https://api.kodama.sh/Luna?size=80&detailLevel=full&animations=glance"><img src="https://api.kodama.sh/Luna?size=80&detailLevel=full&animations=glance" width="80" height="80" alt="Luna" /></a>&nbsp;&nbsp;
   <a href="https://api.kodama.sh/Phoenix?size=80&detailLevel=full&animations=eyeWander,sway"><img src="https://api.kodama.sh/Phoenix?size=80&detailLevel=full&animations=eyeWander,sway" width="80" height="80" alt="Phoenix" /></a>&nbsp;&nbsp;
-  <a href="https://api.kodama.sh/Steve?size=80&detailLevel=full&animations=blink"><img src="https://api.kodama.sh/Steve?size=80&detailLevel=full&animations=blink" width="80" height="80" alt="Steve" /></a>
+  <a href="https://api.kodama.sh/Steve?size=80&detailLevel=full&animations=blink,glance"><img src="https://api.kodama.sh/Steve?size=80&detailLevel=full&animations=blink,glance" width="80" height="80" alt="Steve" /></a>
   <br /><br />
 
-  <h1>Kodama <small>木魅</small></h1>
+  <h3>Kodama <small>木魅</small></h3>
 
   <p><em>Tiny spirits, born from strings. Always alive.</em></p>
 
