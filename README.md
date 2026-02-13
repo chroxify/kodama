@@ -133,4 +133,4 @@ For interactive examples, a live playground, and the full API reference, visit *
 
 ## License
 
-Kodama is licensed under the [GNU Affero General Public License v3 (AGPLv3)](LICENSE).
+Kodama is licensed under the [MIT License](LICENSE).
