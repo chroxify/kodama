@@ -237,7 +237,7 @@ function AnimationRow({
       <span>
         {ANIMATION_OPTIONS.map((anim, i) => (
           <span key={anim}>
-            {i > 0 && <span className='text-foreground-quaternary'>{' - '}</span>}
+            {i > 0 && <span className='text-foreground-quaternary cursor-default'>{' - '}</span>}
             <button
               type='button'
               onClick={() => toggle(anim)}
@@ -435,6 +435,14 @@ export function DeterministicSection() {
 }
 
 export function CombinationsSection() {
+  const combinations = {
+    eyes: ['round', 'cross', 'line', 'curved', 'wink', 'heart'],
+    mouths: ['smile', 'grin', 'o', 'cat', 'tongue', 'smirk', 'flat'],
+    eyebrows: ['arched', 'flat', 'raised', 'none'],
+    cheeks: ['blush', 'none'],
+    accessories: ['glasses', 'sunglasses', 'none'],
+  };
+
   return (
     <Section title='145,152 Combinations'>
       <p>
@@ -444,26 +452,21 @@ export function CombinationsSection() {
       </p>
 
       <ul className='mt-2 flex list-none flex-col gap-1 pl-0'>
-        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='w-22 shrink-0 font-[550] text-heading'>Eyes</strong>
-          <span className='text-foreground-tertiary'>round - cross - line - curved - wink - heart</span>
-        </li>
-        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='w-22 shrink-0 font-[550] text-heading'>Mouths</strong>
-          <span className='text-foreground-tertiary'>smile - grin - o - cat - tongue - smirk - flat</span>
-        </li>
-        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='w-22 shrink-0 font-[550] text-heading'>Eyebrows</strong>
-          <span className='text-foreground-tertiary'>arched - flat - raised - none</span>
-        </li>
-        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='w-22 shrink-0 font-[550] text-heading'>Cheeks</strong>
-          <span className='text-foreground-tertiary'>blush - none</span>
-        </li>
-        <li className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
-          <strong className='w-22 shrink-0 font-[550] text-heading'>Accessories</strong>
-          <span className='text-foreground-tertiary'>glasses - sunglasses - none</span>
-        </li>
+        {Object.entries(combinations).map(([key, values]) => (
+          <li key={key} className='flex text-[0.8125rem] leading-normal text-foreground-secondary'>
+            <strong className='w-22 shrink-0 font-[550] text-heading'>
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </strong>
+            <span className='text-foreground-tertiary'>
+              {values.map((v, i) => (
+                <span key={`${key}-${v}`}>
+                  {i > 0 && <span className='cursor-default'> - </span>}
+                  {v}
+                </span>
+              ))}
+            </span>
+          </li>
+        ))}
       </ul>
 
       <div className='mt-5 flex flex-wrap gap-2'>
