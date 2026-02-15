@@ -8,7 +8,9 @@ import type {
   FacesMood,
 } from 'kodama-id/variants';
 import { faces } from 'kodama-id/variants';
+import { buildPureSvg, initResvg, renderPng } from './png';
 
+const VALID_FORMATS: ReadonlySet<string> = new Set(['svg', 'png']);
 const VALID_VARIANTS: ReadonlySet<string> = new Set(['faces']);
 const VALID_BACKGROUNDS: ReadonlySet<string> = new Set(['gradient', 'solid']);
 const VALID_MOODS: ReadonlySet<string> = new Set(['happy', 'surprised', 'sleepy', 'cool', 'cheeky']);
@@ -69,6 +71,7 @@ export default {
     }
 
     const p = url.searchParams;
+    const format = VALID_FORMATS.has(p.get('format') ?? '') ? p.get('format')! : 'svg';
     const variantName = p.get('variant') ?? 'faces';
 
     if (!VALID_VARIANTS.has(variantName)) {
@@ -105,7 +108,7 @@ export default {
     }
 
     const etag = `"${fnv1a(
-      `${name}:${size}:${variantName}:${shape ?? ''}:${background ?? ''}:${mood ?? ''}:${detailLevel ?? ''}:${depth ?? ''}:${animations?.join(',') ?? ''}:${
+      `${name}:${size}:${format}:${variantName}:${shape ?? ''}:${background ?? ''}:${mood ?? ''}:${detailLevel ?? ''}:${depth ?? ''}:${animations?.join(',') ?? ''}:${
         gradientsParam ?? ''
       }`
     ).toString(36)}"`;
@@ -114,7 +117,7 @@ export default {
       return new Response(null, { status: 304, headers: CACHE_HEADERS });
     }
 
-    const { svg } = createKodama({
+    const result = createKodama({
       name,
       size,
       shape,
@@ -127,9 +130,25 @@ export default {
       gradients,
     });
 
-    const response = new Response(svg, {
+    let body: string | Uint8Array;
+    let contentType: string;
+
+    if (format === 'png') {
+      await initResvg();
+      const { slots } = result;
+      const hasGlasses = slots.accessory === 'glasses' || slots.accessory === 'sunglasses';
+      const glassesActive = result.detailLevel === 'full' && hasGlasses;
+      const pureSvg = buildPureSvg(result.svg, result.detailLevel, slots, glassesActive, size);
+      body = renderPng(pureSvg, size);
+      contentType = 'image/png';
+    } else {
+      body = result.svg;
+      contentType = 'image/svg+xml; charset=utf-8';
+    }
+
+    const response = new Response(body, {
       headers: {
-        'Content-Type': 'image/svg+xml; charset=utf-8',
+        'Content-Type': contentType,
         ETag: etag,
         ...CACHE_HEADERS,
       },

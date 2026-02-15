@@ -11,6 +11,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
     "kodama-id": "workspace:*"
   },
   "devDependencies": {

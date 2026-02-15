@@ -1,6 +1,15 @@
-import { Resvg } from '@resvg/resvg-js';
-import { createKodama } from 'kodama-id';
-import type { NextRequest } from 'next/server';
+import { initWasm, Resvg } from '@resvg/resvg-wasm';
+
+// ── WASM init ────────────────────────────────────────────────────────────────
+
+let initialized = false;
+export async function initResvg() {
+  if (!initialized) {
+    const resvgWasm = (await import('../node_modules/@resvg/resvg-wasm/index_bg.wasm')).default;
+    await initWasm(resvgWasm);
+    initialized = true;
+  }
+}
 
 // ── Detail visibility (same logic as kodama-id) ─────────────────────────────
 
@@ -31,13 +40,14 @@ function positionFeatureSvg(raw: string, x: number, y: number, w: number, h: num
     .replaceAll('currentColor', '#000');
 }
 
-// ── Build a full OG SVG (1200×630) with the avatar centered ─────────────────
+// ── Build pure SVG ──────────────────────────────────────────────────────────
 
-function buildOgSvg(
+export function buildPureSvg(
   svg: string,
   detailLevel: string,
-  slots: { eyebrows: string; cheeks: string },
-  glassesActive: boolean
+  slots: { eyebrows: string; cheeks: string; accessory: string },
+  glassesActive: boolean,
+  size: number
 ): string {
   // 1. Extract structural pieces from the createKodama SVG
   const defs = svg.match(/<defs>[\s\S]*?<\/defs>/)?.[0] ?? '';
@@ -105,59 +115,24 @@ function buildOgSvg(
     positioned += positionFeatureSvg(cheekSvg, 5, 100 - 18 - ch, cw, ch);
   }
 
-  // 5. Compose a full 1200×630 OG image SVG with avatar centered
-  const avatarSize = 300;
-  const ax = (1200 - avatarSize) / 2;
-  const ay = (630 - avatarSize) / 2;
-
+  // 5. Compose pure SVG at requested size
   return [
-    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">',
-    '<rect width="1200" height="630" fill="#faf9f7"/>',
-    `<svg x="${ax}" y="${ay}" width="${avatarSize}" height="${avatarSize}" viewBox="0 0 100 100">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 100 100">`,
     defs,
     `<g clip-path="${clipGroup}">`,
     bgElements,
     positioned,
     '</g>',
     '</svg>',
-    '</svg>',
   ].join('');
 }
 
-// ── Route handler ────────────────────────────────────────────────────────────
+// ── Render to PNG ───────────────────────────────────────────────────────────
 
-export function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-
-  const name = params.get('name') || 'Skyripa';
-  const shape = (params.get('shape') as 'circle' | 'squircle' | 'square') || 'circle';
-  const depth = (params.get('depth') as 'none' | 'subtle' | 'medium' | 'dramatic') || 'dramatic';
-  const detailLevel = (params.get('detail') as 'minimal' | 'basic' | 'standard' | 'full') || 'full';
-  const moodParam = params.get('mood');
-  const mood =
-    moodParam && moodParam !== 'none'
-      ? (moodParam as 'happy' | 'surprised' | 'sleepy' | 'cool' | 'cheeky')
-      : undefined;
-  const background = (params.get('bg') as 'gradient' | 'solid') || 'gradient';
-
-  const result = createKodama({ name, size: 300, shape, depth, detailLevel, mood, background });
-  const { svg, slots } = result;
-
-  const showAccessories = canRenderSlot('accessory', detailLevel);
-  const hasGlasses = slots.accessory === 'glasses' || slots.accessory === 'sunglasses';
-  const glassesActive = showAccessories && hasGlasses;
-
-  const ogSvg = buildOgSvg(svg, detailLevel, slots, glassesActive);
-
-  const resvg = new Resvg(ogSvg, {
-    fitTo: { mode: 'width' as const, value: 1200 },
+export function renderPng(pureSvg: string, size: number): Uint8Array {
+  const resvg = new Resvg(pureSvg, {
+    fitTo: { mode: 'width' as const, value: size },
   });
-  const png = resvg.render().asPng();
-
-  return new Response(new Uint8Array(png), {
-    headers: {
-      'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=86400, immutable',
-    },
-  });
+  const rendered = resvg.render();
+  return rendered.asPng();
 }
